@@ -1,5 +1,7 @@
+
 Django==5.0.6
 django-scheduler==0.10.1
+dj-database-url==2.2.0
 django-validators==1.0.1
 mysqlclient==2.2.4
 packaging==24.1

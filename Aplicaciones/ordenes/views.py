@@ -984,28 +984,70 @@ def logout_view(request):
 
 
 # Vista de registro de usuario
+# Vista de registro de usuario
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        email = request.POST['email'].upper()
+        email = request.POST['email'].lower()
         nombre = request.POST['nombre'].upper()
         apellido = request.POST['apellido'].upper()
         telefono = request.POST['telefono']
+        ci_us = request.POST['ci_us']
         rol = request.POST['rol'].upper()
+
+        # Verificar si ya existe un usuario con el mismo username
+        if Usuario.objects.filter(username=username).exists():
+            messages.error(request, 'El usuario ya existe. Por favor, elija un nombre de usuario diferente.')
+            return render(request, 'register.html', {
+                'username': username,
+                'email': email,
+                'nombre': nombre,
+                'apellido': apellido,
+                'telefono': telefono,
+                'ci_us': ci_us,
+                'rol': rol
+            })
+
+        # Verificar si ya existe un usuario con el mismo email
+        if Usuario.objects.filter(email=email).exists():
+            messages.error(request, 'El correo electrónico ya está registrado. Por favor, use un correo diferente.')
+            return render(request, 'register.html', {
+                'username': username,
+                'email': email,
+                'nombre': nombre,
+                'apellido': apellido,
+                'telefono': telefono,
+                'ci_us': ci_us,
+                'rol': rol
+            })
+
+        # Verificar si ya existe un usuario con el mismo ci_us
+        if Usuario.objects.filter(ci_us=ci_us).exists():
+            messages.error(request, 'La cédula ya está registrada. Por favor, use una cédula diferente.')
+            return render(request, 'register.html', {
+                'username': username,
+                'email': email,
+                'nombre': nombre,
+                'apellido': apellido,
+                'telefono': telefono,
+                'ci_us': ci_us,
+                'rol': rol
+            })
+
         user = Usuario(
             username=username,
             email=email,
             nombre=nombre,
             apellido=apellido,
             telefono=telefono,
+            ci_us=ci_us,
             rol=rol)
         user.set_password(password)  # Hashear la contraseña
         user.save()
         messages.success(request, 'Usuario registrado exitosamente')
         return redirect('mecanicos')
     return render(request, 'register.html')
-
 # Vista de permiso denegado
 
 def permission_denied_view(request):

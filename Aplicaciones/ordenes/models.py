@@ -9,6 +9,7 @@ class Usuario(models.Model):
     telefono = models.CharField(max_length=15, blank=True, null=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
+    ci_us = models.CharField(max_length=13, null=True)
     ADMINISTRADOR = 'ADMINISTRADOR'
     MECANICO = 'MECANICO'
     ROLES = [
@@ -35,13 +36,14 @@ class Producto(models.Model):
     nombre_pro = models.CharField(max_length=100, null=True)
     cantidad_pro = models.FloatField()
     descripcion_pro = models.CharField(max_length=400, null=True)
-    ftprodu = models.FileField(upload_to='producto',blank=True)
-    fkcategoria = models.ForeignKey(Categoria,blank=True,on_delete=models.PROTECT)
+    ftprodu = models.FileField(upload_to='producto',null=True,blank=True)
+    fkcategoria = models.ForeignKey(Categoria,null=True,blank=True,on_delete=models.PROTECT)
 
 
 class Clientes(models.Model):
     id_cli = models.CharField(max_length=13,primary_key=True)
     nombre_cli = models.CharField(max_length=50)
+    apellido_cli = models.CharField(max_length=50,null=True )
     correo_cli = models.CharField(max_length=50)
     direccion_cli = models.CharField(max_length=50)
     estatura_cli=models.CharField(max_length=13,null =True)
@@ -58,13 +60,15 @@ class Clientes(models.Model):
 
 class Bicicleta(models.Model):
     id_bic = models.CharField(max_length=20,primary_key=True)
-    color_bic = models.CharField(max_length=20)
-    marca_bic = models.CharField(max_length=30)
+    color_bic = models.CharField(max_length=20,null=True)
+    marca_bic = models.CharField(max_length=30,null=True)
     descripcion_bic = models.TextField()
-    tipo_bic = models.CharField(max_length=40)
-    estado_bic = models.CharField(max_length=40)
-    fotografia = models.FileField(upload_to='bicicleta',blank=True)
-    cliente=models.ForeignKey(Clientes,blank=True,on_delete=models.PROTECT)
+    tipo_bic = models.CharField(max_length=40,null=True)
+    accesorios_bic = models.CharField(max_length=40,null=True)
+    grupo_bic = models.CharField(max_length=40,null=True)
+    talla_bic = models.CharField(max_length=40,null=True)
+    fotografia = models.FileField(upload_to='bicicleta',null=True,blank=True)
+    cliente=models.ForeignKey(Clientes,null=True,blank=True,on_delete=models.PROTECT)
     is_deleted = models.BooleanField(default=False)  # Campo para eliminación lógica
     def eliminar_logicamente(self):
         self.is_deleted = True
@@ -81,16 +85,16 @@ class Mecanico(models.Model):
     nombre_mec = models.CharField(max_length=40)
     correo_mec = models.CharField(max_length=40)
     direc_mec = models.CharField(max_length=100)
-    expdf_mec = models.FileField(upload_to='pdfsmecanicos',blank=True)
-    fkusuario = models.ForeignKey(Usuario,  blank=True, on_delete=models.PROTECT)
+    expdf_mec = models.FileField(upload_to='pdfsmecanicos',null=True,blank=True)
+    fkusuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.PROTECT)
 
 
 class Repuesto(models.Model):
     id_rep = models.CharField(max_length=20,primary_key=True)
-    nombre_rep = models.CharField(max_length=255)
-    precio_rep = models.CharField(max_length=7)
-    proveedor_rep = models.CharField(max_length=20)
-    marca_rep = models.CharField(max_length=50)
+    nombre_rep = models.CharField(max_length=255,null=True)
+    precio_rep = models.CharField(max_length=7,null=True)
+    proveedor_rep = models.CharField(max_length=20,null=True)
+    marca_rep = models.CharField(max_length=50,null=True)
     descripcion_rep = models.TextField()
     cantidad = models.IntegerField(default=1)
 
@@ -100,9 +104,9 @@ class Orden(models.Model):
     id_ord = models.AutoField(primary_key=True)
     descripcion_ord = models.TextField()
     fecha_ord = models.DateField(null=True)
-    bicicleta = models.ForeignKey(Bicicleta,blank=True,on_delete=models.PROTECT)
-    mecanico = models.ForeignKey(Mecanico,blank=True,on_delete=models.PROTECT)
-    fkusuario = models.ForeignKey(Usuario,  blank=True, on_delete=models.PROTECT)
+    bicicleta = models.ForeignKey(Bicicleta,null=True,blank=True,on_delete=models.PROTECT)
+    mecanico = models.ForeignKey(Mecanico,null=True,blank=True,on_delete=models.PROTECT)
+    fkusuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.PROTECT)
 
 class Detalle(models.Model):
     id_det = models.AutoField(primary_key=True)
@@ -111,7 +115,7 @@ class Detalle(models.Model):
     estado_det = models.CharField(max_length=20, null=True)
     total_det = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     fkrepuestos = models.ManyToManyField(Repuesto, blank=True)
-    orden = models.ForeignKey(Orden,  blank=True, on_delete=models.PROTECT)
+    orden = models.ForeignKey(Orden, null=True, blank=True, on_delete=models.PROTECT)
 
     def detalles_completos(self):
         return all([

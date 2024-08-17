@@ -10,7 +10,7 @@
         <form method="post" id="frm_nuevo_usuario" data-parsley-validate>
             {% csrf_token %}
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="username">Usuario:</label>
                     <input type="text" name="username" id="username" placeholder="Ingrese su usuario" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su usuario"
@@ -18,7 +18,7 @@
                            data-parsley-minlength-message="El usuario debe tener al menos 3 caracteres">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="password">Contraseña:</label>
                     <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su contraseña"
@@ -26,7 +26,17 @@
                            data-parsley-minlength-message="La contraseña debe tener al menos 6 caracteres">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
+                    <label for="ci_us">Cédula:</label>
+                    <input type="text" name="ci_us" id="ci_us" placeholder="Ingrese su cédula" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su cédula"
+                           data-parsley-valid-ecuadorian-id
+                           data-parsley-valid-ecuadorian-id-message="Por favor ingrese una cédula ecuatoriana válida">
+                    <span class="valid-feedback">✔</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="email">Email:</label>
                     <input type="email" name="email" id="email" placeholder="Ingrese su email" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su email"
@@ -34,7 +44,7 @@
                            data-parsley-type-message="Ingrese un email válido">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="nombre">Nombre:</label>
                     <input type="text" name="nombre" id="nombre" placeholder="Ingrese su nombre" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su nombre"
@@ -42,7 +52,7 @@
                            data-parsley-pattern-message="El nombre solo debe contener letras y espacios">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="apellido">Apellido:</label>
                     <input type="text" name="apellido" id="apellido" placeholder="Ingrese su apellido" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su apellido"
@@ -50,7 +60,9 @@
                            data-parsley-pattern-message="El apellido solo debe contener letras y espacios">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="telefono">Teléfono:</label>
                     <input type="text" name="telefono" id="telefono" placeholder="Ingrese su teléfono" class="form-control" required
                            data-parsley-required-message="Por favor ingrese su teléfono"
@@ -58,7 +70,7 @@
                            data-parsley-pattern-message="El teléfono debe comenzar con 09 y tener 10 dígitos">
                     <span class="valid-feedback">✔</span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="rol">Rol:</label>
                     <select name="rol" id="rol" class="form-control" required
                             data-parsley-required-message="Por favor seleccione un rol">
@@ -103,7 +115,7 @@
     }
 
     .form-group {
-        flex: 0 0 50%; /* Ancho de cada columna */
+        flex: 0 0 33.3333%; /* Ancho de cada columna */
         padding: 0 10px; /* Espacio entre los elementos */
         margin-bottom: 15px;
         position: relative; /* Para posicionar el icono de verificación */
@@ -166,15 +178,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/i18n/es.js"></script>
 <script>
+    // Función para validar la cédula ecuatoriana
+    function validarCedulaEcuatoriana(value) {
+        if (!/^\d{10}$/.test(value)) {
+            return false; // La cédula debe tener 10 dígitos
+        }
+
+        let suma = 0;
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        const digitoVerificador = parseInt(value.charAt(9), 10);
+
+        for (let i = 0; i < 9; i++) {
+            let digito = parseInt(value.charAt(i), 10) * coeficientes[i];
+            suma += digito > 9 ? digito - 9 : digito;
+        }
+
+        const modulo = (suma % 10);
+        const verificador = modulo === 0 ? 0 : 10 - modulo;
+
+        return verificador === digitoVerificador;
+    }
+
+    // Agrega la validación personalizada en Parsley.js
+    Parsley.addValidator('validEcuadorianId', {
+        validateString: function(value) {
+            return validarCedulaEcuatoriana(value);
+        },
+        messages: {
+            en: 'Por favor ingrese una cédula ecuatoriana válida'
+        }
+    });
+
     $(document).ready(function () {
-        window.Parsley.setLocale('es');
-        $('#frm_nuevo_usuario').parsley().on('field:success', function (field) {
-            // Muestra el ícono de verificación cuando el campo es válido
-            $(field.$element).closest('.form-group').addClass('parsley-success');
-        }).on('field:error', function (field) {
-            // Elimina el ícono de verificación si el campo no es válido
-            $(field.$element).closest('.form-group').removeClass('parsley-success');
-        });
+        $('#frm_nuevo_usuario').parsley();
     });
 </script>
 {% endblock %}

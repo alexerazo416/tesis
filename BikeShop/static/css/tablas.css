@@ -1,0 +1,23 @@
+
+
+/* :Tabla clientes  */
+    #tbl_clientes th,
+    #tbl_clientes td {
+        font-size: 15px!important;
+        font-weight: bold !important;
+    }
+
+    .h1 {
+        text-align: center;
+
+    }
+    .th{
+      font
+    }
+
+    .btn-primary,
+    .btn-info,
+    .btn-danger {
+        margin: 5px;
+
+    }

@@ -1,0 +1,89 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Listado de Clientes{% endblock %}
+{% block content %}
+
+
+
+  <div class="col-md-12">
+    <div class="card p-3">
+      <div class="card-Header">
+        <div class="d-flex align-items-center">
+                      <h4 class="card-title">LISTADO DE CLIENTES</h4>
+                     <a href="{% url 'agCliente' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Cliente</a>
+                    </div>
+      </div>
+    <div class="card-body">
+    <div class="table-responsive  ">
+
+
+    <table  class="display table table-striped table-hover" id="tbl_clientes">
+      <thead>
+        <tr>
+          <th>Nº Cédula</th>
+          <th>Nombre y Apellido</th>
+          <th>Correo</th>
+          <th>Dirección</th>
+          <th>Estatura</th>
+          <th>Teléfono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.id_cli }}</td>
+          <td>{{ cliente.nombre_cli }}</td>
+          <td>{{ cliente.correo_cli }}</td>
+          <td>{{ cliente.direccion_cli }}</td>
+          <td>{{ cliente.estatura_cli }}</td>
+          <td>{{ cliente.fono }}</td>
+          <td>
+            <a href="/editarCliente/{{ cliente.id_cli }}" class="btn btn-info">
+              <i class="fas fa-edit"></i>
+            </a>
+
+            <a href="javascript:void(0)" onclick="eliminarCliente('/eliminarCliente/{{ cliente.id_cli }}');" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+
+          </td>
+
+
+        </tr>
+
+
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+      </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function eliminarCliente(url) {
+    Swal.fire({
+      title: "¿Está seguro de eliminar el cliente seleccionado?",
+      text: "",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "SÍ"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        eliminarClienteConfirmado(url);
+      } else {
+        console.log("Eliminación cancelada");
+      }
+    });
+  }
+
+  function eliminarClienteConfirmado(url) {
+    window.location.href = url;
+  }
+</script>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

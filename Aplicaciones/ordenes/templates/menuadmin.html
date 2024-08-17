@@ -1,0 +1,135 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Menú Principal{% endblock %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .menu-card {
+        margin-bottom: 20px;
+        text-align: center;
+        background-color: #f8f9fa; /* Light gray background */
+        border: none;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    .menu-card:hover {
+        transform: translateY(-5px);
+    }
+    .menu-card i {
+        font-size: 50px;
+        color: #0F0CE1; /* Primary color */
+    }
+    .menu-card h5 {
+        margin-top: 10px;
+        font-size: 20px;
+        color: #333;
+    }
+    .card-link {
+        text-decoration: none;
+    }
+    .card-link:hover {
+        text-decoration: none;
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-12 text-center">
+            <h1>Menú Principal</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="{% url 'verRepuesto' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-tools"></i>
+                        <h5 class="card-title">Repuestos</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'clientes' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-users"></i>
+                        <h5 class="card-title">Clientes</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'mecanicos' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-wrench"></i>
+                        <h5 class="card-title">Mecánicos</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'ordenes' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h5 class="card-title">Órdenes</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="{% url 'verBicicletas' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-bicycle"></i>
+                        <h5 class="card-title">Bicicletas</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'verDetalles' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-info-circle"></i>
+                        <h5 class="card-title">Detalles</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'productosadmin' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-box"></i>
+                        <h5 class="card-title">Productos</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'categorias' %}" class="card-link">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <i class="fas fa-tags"></i>
+                        <h5 class="card-title">Categorías</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

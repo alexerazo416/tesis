@@ -1,0 +1,138 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Agregar Repuesto{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Agregar Repuesto</h3>
+        </div>
+        <form action="/guardarRepuesto/" method="post" enctype="multipart/form-data" id="frm_nuevo_repuesto">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="nombre_rep">Nombre:</label>
+                    <input type="text" name="nombre_rep" id="nombre_rep" class="form-control" placeholder="Ingrese nombre del repuesto" required
+                           data-parsley-required-message="Por favor ingrese el nombre del repuesto"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="precio_rep">Precio:</label>
+                    <input type="number" name="precio_rep" id="precio_rep" class="form-control" placeholder="Ingrese precio" required
+                           data-parsley-required-message="Por favor ingrese el precio del repuesto"
+                           data-parsley-type="number"
+                           data-parsley-type-message="Ingrese un número válido"
+                           data-parsley-max="9999"
+                           data-parsley-max-message="El precio no puede tener más de 4 dígitos">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="marca_rep">Marca:</label>
+                    <input type="text" name="marca_rep" id="marca_rep" class="form-control" placeholder="Ingrese la marca" required
+                           data-parsley-required-message="Por favor ingrese la marca del repuesto"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="La marca debe tener al menos 2 caracteres">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="id_rep">Código Producto:</label>
+                    <input type="text" name="id_rep" id="id_rep" class="form-control" placeholder="Ingrese un código producto">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="descripcion_rep">Descripción:</label>
+                    <input type="text" name="descripcion_rep" id="descripcion_rep" class="form-control" placeholder="Ingrese una descripción">
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/verRepuesto" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #004ba6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 26px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input {
+    border-radius: 5px;
+    width: 100%;
+    font-size: 18px;
+}
+
+.form-group input::placeholder {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#frm_nuevo_repuesto').parsley({
+            messages: {
+                "nombre_rep": {
+                    required: "Por favor ingrese el nombre del repuesto",
+                    pattern: "Solo se permiten letras y espacios",
+                    minlength: "El nombre debe tener al menos 2 caracteres"
+                },
+                "precio_rep": {
+                    required: "Por favor ingrese el precio del repuesto",
+                    type: "Ingrese un número válido",
+                    max: "El precio no puede tener más de 4 dígitos"
+                },
+                "marca_rep": {
+                    required: "Por favor ingrese la marca del repuesto",
+                    pattern: "Solo se permiten letras y espacios",
+                    minlength: "La marca debe tener al menos 2 caracteres"
+                },
+                "descripcion_rep": {
+                    minlength: "La descripción debe tener al menos 5 caracteres"
+                },
+                "id_rep": {
+                    // Puedes agregar validaciones específicas para este campo si es necesario
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Información de la Bicicleta{% endblock %}
+{% block content %}
+<br><br>
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Editar Información de la Bicicleta</h3>
+        </div>
+        <form action="/procesarActualizacionBicicleta/" method="post" enctype="multipart/form-data" id="frm_editar_bicicleta">
+            {% csrf_token %}
+            <input type="hidden" name="id_bic" id="id_bic" class="form-control" value="{{ bicicleta.id_bic }}" required>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="cli">Cliente:</label>
+                    <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="cli" id="cli" required
+                            data-parsley-required-message="Por favor seleccione el cliente">
+                        <option value="">Seleccione el cliente</option>
+                        {% for cliente in cliente %}
+                            <option value="{{ cliente.id_cli }}" {% if cliente.id_cli == bicicleta.cliente.id_cli %} selected {% endif %}>{{ cliente.nombre_cli }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="color_bic">Color:</label>
+                    <input type="text" name="color_bic" id="color_bic" value="{{ bicicleta.color_bic }}" placeholder="Ingrese color de la bicicleta" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese el color de la bicicleta"
+                           data-parsley-pattern="^[a-zA-Z0-9\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras, números y espacios">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="marca_bic">Marca:</label>
+                    <input type="text" name="marca_bic" id="marca_bic" value="{{ bicicleta.marca_bic }}" placeholder="Ingrese marca" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese la marca de la bicicleta"
+                           data-parsley-pattern="^[a-zA-Z0-9\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras, números y espacios">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="descripcion_bic">Descripción:</label>
+                    <textarea name="descripcion_bic" id="descripcion_bic" class="form-control" placeholder="Ingrese una descripción" required
+                              minlength="10"
+                              data-parsley-required-message="Por favor ingrese una descripción"
+                              data-parsley-minlength="10"
+                              data-parsley-minlength-message="La descripción debe tener al menos 10 caracteres">{{ bicicleta.descripcion_bic }}</textarea>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="tipo_bic">Tipo:</label>
+                  <select name="tipo_bic" id="tipo_bic" class="form-control" required
+                          data-parsley-required-message="Por favor seleccione el tipo">
+                      <option value="">Seleccione el tipo</option>
+                      <option value="Montanera" {% if bicicleta.tipo_bic == "Montanera" %} selected {% endif %}>Montañera</option>
+                      <option value="Bmx" {% if bicicleta.tipo_bic == "Bmx" %} selected {% endif %}>Bmx</option>
+                      <option value="Electrica" {% if bicicleta.tipo_bic == "Electrica" %} selected {% endif %}>Eléctrica</option>
+                      <option value="Clasica" {% if bicicleta.tipo_bic == "Clasica" %} selected {% endif %}>Clásica</option>
+                      <option value="Gravel" {% if bicicleta.tipo_bic == "Gravel" %} selected {% endif %}>Gravel</option>
+                      <option value="Ruta" {% if bicicleta.tipo_bic == "Ruta" %} selected {% endif %}>Ruta</option>
+                      <option value="Hibrida" {% if bicicleta.tipo_bic == "Hibrida" %} selected {% endif %}>Híbrida</option>
+                  </select>
+              </div>
+                <div class="form-group col-md-6">
+                    <label for="fotografia">Fotografía:</label>
+                    <input type="file" name="fotografia" id="fotografia" accept="image/*" class="form-control-file" onchange="previewImage(event)"
+                           data-parsley-required-message="Por favor cargue una fotografía">
+                    <div id="drop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event)" style="border: 2px dashed #ccc; padding: 10px; text-align: center; margin-top: 10px;">
+                        Arrastra y suelta una imagen aquí
+                    </div>
+                    <img id="img-preview" class="img-preview" src="{% if bicicleta.fotografia %}{{ bicicleta.fotografia.url }}{% endif %}" alt="Previsualización de la imagen" style="{% if not bicicleta.fotografia %}display: none;{% endif %}">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/verBicicletas" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style media="screen">
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .form-header {
+        background-color: #004ba6;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px 8px 0 0;
+        margin: -20px -20px 20px;
+    }
+
+    .form-footer {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 26px;
+        font-size: 18px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        border-radius: 5px;
+    }
+
+    .img-preview {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        padding: 5px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#frm_editar_bicicleta').parsley();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "./plantilla2.html" %}
+{% load static %}
+{% block contenido %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ver Estado de la Bicicleta</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container-custom {
+            margin: 30px;
+        }
+        .search-container, .results-container {
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+        .form-control{
+          border-radius: 12px;
+        }
+        .no-results {
+            margin-top: 20px;
+            text-align: left;
+            color: #333;
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
+            justify-content: center;
+            align-content: center;
+        }
+        .boton{
+          border-radius: 12px;
+          width: 200px;
+        }
+        .boton::hover{
+          background-color:lightseagreen;
+        }
+
+    </style>
+</head>
+<body>
+        <div class="row container-custom">
+            <div class="col-md-3 search-container">
+                <center><h4>Buscar estado</h4></center>
+                <form method="get" action="{% url 'estado' %}">
+                    <label for="id_cli">Identificación del Cliente:</label>
+                    <input type="text" id="id_cli" name="id_cli" class="form-control" value="">
+                    <center><button type="submit" class="btn btn-primary mt-2 boton">Buscar</button></center>
+                </form>
+
+                {% if id_cli and not clientes %}
+                    <p class="no-results">No se encontraron resultados para el número de identificación: {{ id_cli }}</p>
+                {% endif %}
+            </div>
+
+            {% if clientes %}
+                <div class="col-md-9 results-container">
+                    <center><h4>Resultados</h4></center>
+                    <table class="table table-striped project-orders-table" id="tbl_ordenes">
+                        <thead>
+                            <tr>
+                                <th>Nº Orden</th>
+                                <th>Fecha de Ingreso</th>
+                                <th>Descripción</th>
+                                <th>Bicicleta</th>
+                                <th>Dueño</th>
+                                <th>Estado de la Bicicleta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for orden in ordenes %}
+                            <tr>
+                                <td>{{ orden.id_ord }}</td>
+                                <td>{{ orden.fecha_ord }}</td>
+                                <td>{{ orden.descripcion_ord }}</td>
+                                <td>{{ orden.bicicleta.descripcion_bic }}</td>
+                                <td>{{ orden.bicicleta.cliente.nombre_cli }}</td>
+                                <td>
+                                    {% for detalle in detalles %}
+                                        {% if detalle.orden.id_ord == orden.id_ord %}
+                                            {{ detalle.estado_det }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

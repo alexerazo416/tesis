@@ -1,0 +1,180 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Registro{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Registrar mecánico</h3>
+        </div>
+        <form method="post" id="frm_nuevo_usuario" data-parsley-validate>
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="username">Usuario:</label>
+                    <input type="text" name="username" id="username" placeholder="Ingrese su usuario" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su usuario"
+                           data-parsley-minlength="3"
+                           data-parsley-minlength-message="El usuario debe tener al menos 3 caracteres">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su contraseña"
+                           data-parsley-minlength="6"
+                           data-parsley-minlength-message="La contraseña debe tener al menos 6 caracteres">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" placeholder="Ingrese su email" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su email"
+                           data-parsley-type="email"
+                           data-parsley-type-message="Ingrese un email válido">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre" placeholder="Ingrese su nombre" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su nombre"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="El nombre solo debe contener letras y espacios">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="apellido">Apellido:</label>
+                    <input type="text" name="apellido" id="apellido" placeholder="Ingrese su apellido" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su apellido"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="El apellido solo debe contener letras y espacios">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="text" name="telefono" id="telefono" placeholder="Ingrese su teléfono" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese su teléfono"
+                           data-parsley-pattern="^09\d{8}$"
+                           data-parsley-pattern-message="El teléfono debe comenzar con 09 y tener 10 dígitos">
+                    <span class="valid-feedback">✔</span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="rol">Rol:</label>
+                    <select name="rol" id="rol" class="form-control" required
+                            data-parsley-required-message="Por favor seleccione un rol">
+                        <option value="MECANICO">Mecánico</option>
+                    </select>
+                    <span class="valid-feedback">✔</span>
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+                <a href="{% url 'mecanicos' %}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .form-header {
+        background-color: #004ba6;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px 8px 0 0;
+        margin: -20px -20px 20px;
+    }
+
+    .form-footer {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px; /* Espacio entre los elementos */
+    }
+
+    .form-group {
+        flex: 0 0 50%; /* Ancho de cada columna */
+        padding: 0 10px; /* Espacio entre los elementos */
+        margin-bottom: 15px;
+        position: relative; /* Para posicionar el icono de verificación */
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"],
+    .form-group input[type="email"],
+    .form-group select {
+        height: 38px;
+    }
+
+    .form-group .valid-feedback {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: green;
+        font-size: 20px;
+        display: none; /* Oculto por defecto */
+    }
+
+    .form-group .parsley-success .valid-feedback {
+        display: block; /* Muestra el ícono cuando el campo es válido */
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/i18n/es.js"></script>
+<script>
+    $(document).ready(function () {
+        window.Parsley.setLocale('es');
+        $('#frm_nuevo_usuario').parsley().on('field:success', function (field) {
+            // Muestra el ícono de verificación cuando el campo es válido
+            $(field.$element).closest('.form-group').addClass('parsley-success');
+        }).on('field:error', function (field) {
+            // Elimina el ícono de verificación si el campo no es válido
+            $(field.$element).closest('.form-group').removeClass('parsley-success');
+        });
+    });
+</script>
+{% endblock %}

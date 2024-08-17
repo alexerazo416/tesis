@@ -1,0 +1,88 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Categoría{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Editar Categoría</h3>
+        </div>
+        <form action="/actCategoria/{{ categoria.id_cat }}" method="post" enctype="multipart/form-data" id="frm_editar_categoria">
+            {% csrf_token %}
+            <input type="hidden" name="id_cat" value="{{ categorias.id_cat }}">
+            <div class="form-group">
+                <label for="tipo_cat">Nombre de la Categoría:</label>
+                <input type="text" name="tipo_cat" id="tipo_cat" class="form-control" value="{{ categorias.tipo_cat }}" placeholder="Ingrese el nombre de la categoría" required>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/categorias" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #004ba6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input {
+    border-radius: 5px;
+    width: 100%;
+    text-decoration: none;
+}
+
+.form-group input::placeholder {
+    text-decoration: none;
+}
+</style>
+<script type="text/javascript">
+    $.validator.addMethod("lettersAndSpaces", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    }, "Solo se permiten letras y espacios");
+
+    $(document).ready(function () {
+        $("#frm_editar_categoria").validate({
+            rules: {
+                "tipo_cat": {
+                    required: true,
+                    lettersAndSpaces: true,
+                }
+            },
+            messages: {
+                "tipo_cat": {
+                    required: "Por favor ingrese el nombre de la categoría",
+                    lettersAndSpaces: "Solo se permiten letras y espacios",
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

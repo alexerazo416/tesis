@@ -1,0 +1,133 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Repuesto{% endblock %}
+{% block content %}
+<br><br>
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Editar Repuesto</h3>
+        </div>
+        <form action="/actRepuesto/" enctype="multipart/form-data" method="post" id="frm_nuevo_repuesto">
+            {% csrf_token %}
+            <input type="hidden" name="id_rep" value="{{ repuesto.id_rep }}">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="nombre_rep">Nombre:</label>
+                    <input type="text" name="nombre_rep" id="nombre_rep" value="{{ repuesto.nombre_rep }}" placeholder="Ingrese nombre del repuesto" class="form-control" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="precio_rep">Precio:</label>
+                    <input type="number" name="precio_rep" id="precio_rep" value="{{ repuesto.precio_rep }}" placeholder="Ingrese precio" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <label for="marca_rep">Marca:</label>
+                    <input type="text" name="marca_rep" id="marca_rep" value="{{ repuesto.marca_rep }}" placeholder="Ingrese la marca" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_rep">Descripción:</label>
+                <input type="text" name="descripcion_rep" id="descripcion_rep" value="{{ repuesto.descripcion_rep }}" placeholder="Ingrese una descripción" class="form-control">
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a href="/verRepuesto" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .form-header {
+        background-color: #004ba6;
+        color: #ffffff;
+        padding: 1px 2px;
+        border-radius: 8px 8px 0 0;
+        margin: -20px -20px 20px;
+    }
+
+    .form-footer {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 26px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        font-size: 18px; /* Tamaño de la letra para las etiquetas */
+    }
+
+    .form-group input,
+    .form-group select {
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+</style>
+<script type="text/javascript">
+    $.validator.addMethod("lettersAndSpaces", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    }, "Solo se permiten letras y espacios");
+
+    $.validator.addMethod("number", function (value, element) {
+        return this.optional(element) || /^-?\d+(\.\d{1,2})?$/.test(value);
+    }, "Por favor ingrese un número válido");
+
+    $(document).ready(function () {
+        $("#frm_nuevo_repuesto").validate({
+            rules: {
+                "nombre_rep": {
+                    required: true,
+                    minlength: 2
+                },
+                "precio_rep": {
+                    required: true,
+                    number: true
+                },
+                "marca_rep": {
+                    required: true,
+                    lettersAndSpaces: true,
+                    minlength: 2
+                },
+                "descripcion_rep": {
+                    minlength: 5,
+                    required: true,
+                }
+            },
+            messages: {
+                "nombre_rep": {
+                    required: "Por favor ingrese el nombre del repuesto",
+                    minlength: "El nombre debe tener al menos 2 caracteres"
+                },
+                "precio_rep": {
+                    required: "Por favor ingrese el precio del repuesto",
+                    number: "Por favor ingrese un número válido"
+                },
+                "marca_rep": {
+                    required: "Por favor ingrese la marca del repuesto",
+                    lettersAndSpaces: "Solo se permiten letras y espacios",
+                    minlength: "La marca debe tener al menos 2 caracteres"
+                },
+                "descripcion_rep": {
+                    minlength: "La descripción debe tener al menos 5 caracteres",
+                    required: "Por favor ingrese la descripción repuesto",
+                }
+            },
+            errorClass: "text-danger"
+        });
+    });
+    </script>
+{% endblock %}

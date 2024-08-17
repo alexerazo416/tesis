@@ -1,0 +1,238 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Agregar Detalles de la Orden{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Agregar Detalles de la Orden</h3>
+        </div>
+        <form action="/procesarActualizacionDetalle/" method="post" enctype="multipart/form-data" id="frm_nuevo_detalle">
+            {% csrf_token %}
+            <input type="hidden" name="id_det" value="{{ detalles.id_det }}">
+            <input type="hidden" id="fecha_ingreso" value="{{ fecha_ingreso|date:'Y-m-d' }}"> <!-- Campo oculto con la fecha de ingreso -->
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="entrega_det">Fecha estimada de Entrega:</label>
+                    <input type="date" name="entrega_det" id="entrega_det" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese la fecha estimada de entrega"
+                           data-parsley-date="true"
+                           data-parsley-date-message="Por favor ingrese una fecha válida"
+                           data-parsley-date-after="{{ fecha_ingreso|date:'Y-m-d' }}"
+                           data-parsley-date-after-message="La fecha de entrega debe ser mayor o igual a la fecha de ingreso.">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="metodoPago_det">Método de Pago:</label>
+                    <select class="form-control" name="metodoPago_det" id="metodoPago_det" required
+                            data-parsley-required-message="Por favor seleccione el método de pago"
+                            data-parsley-pattern="^[a-zA-Z\s]+$"
+                            data-parsley-pattern-message="Solo se permiten letras y espacios">
+                        <option value="">Seleccione Método de Pago</option>
+                        <option value="Efectivo" {% if detalles.metodoPago_det == "Efectivo" %} selected {% endif %}>Efectivo</option>
+                        <option value="Transferencia" {% if detalles.metodoPago_det == "Transferencia" %} selected {% endif %}>Transferencia</option>
+                        <option value="Tarjeta de Crédito" {% if detalles.metodoPago_det == "Tarjeta de Crédito" %} selected {% endif %}>Tarjeta de Crédito</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="estado_det">Estado:</label>
+                    <select class="form-control" name="estado_det" id="estado_det" required
+                            data-parsley-required-message="Por favor seleccione el estado"
+                            data-parsley-pattern="^[a-zA-Z\s]+$"
+                            data-parsley-pattern-message="Solo se permiten letras y espacios">
+                        <option value="">Seleccione el Estado</option>
+                        <option value="Recibida" {% if detalles.estado_det == "Recibida" %} selected {% endif %}>Recibida</option>
+                        <option value="Iniciado" {% if detalles.estado_det == "Iniciado" %} selected {% endif %}>Iniciado</option>
+                        <option value="List_ent" {% if detalles.estado_det == "List_ent" %} selected {% endif %}>Lista para entregar</option>
+                    </select>
+                </div>
+            </div><br>
+            <div class="form-group">
+                <label for="repuestos">Repuestos Usados:</label>
+                <button type="button" class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#repuestos-container">Mostrar/Ocultar Repuestos</button>
+                <div id="repuestos-container" class="collapse">
+                    <table id="repuestos-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Seleccionar</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for repuesto in repuestos %}
+                            <tr class="repuesto-item">
+                                <td>
+                                    <input type="checkbox" name="id_rep" value="{{ repuesto.id_rep }}"
+                                        {% if repuesto.id_rep in repuestos_seleccionados %} checked {% endif %}>
+                                </td>
+                                <td>{{ repuesto.nombre_rep }}</td>
+                                <td>{{ repuesto.precio_rep }}</td>
+                                <td>
+                                    <input type="number" name="cantidad_{{ repuesto.id_rep }}" value="1" min="1" class="cantidad-input form-control"
+                                        {% if repuesto.id_rep not in repuestos_seleccionados %} disabled {% endif %}>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="total_det">Total:</label>
+                <input type="text" name="total_det" id="total_det" class="form-control" placeholder="Ingrese el total a pagar" value="{{ total }}" readonly>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a href="/ordenes" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+  }
+
+  .form-header {
+    background-color: #0F0CE1;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+  }
+
+  .form-footer {
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .form-group input,
+  .form-group select {
+    border-radius: 5px;
+    font-size: 18px;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    // Función para validar la fecha de entrega
+    function validateDateAfter(value, date) {
+        var inputDate = new Date(value);
+        var comparisonDate = new Date(date);
+        return inputDate.setHours(0, 0, 0, 0) >= comparisonDate.setHours(0, 0, 0, 0);
+    }
+
+    // Agregar validaciones personalizadas en Parsley.js
+    Parsley.addValidator('dateAfter', {
+        validateString: function (value, date) {
+            return validateDateAfter(value, date);
+        },
+        messages: {
+            en: 'The delivery date must be the same or after the entry date.',
+            es: 'La fecha de entrega debe ser mayor o igual a la fecha de ingreso.'
+        }
+    });
+
+    Parsley.addValidator('lettersAndSpaces', {
+        validateString: function (value) {
+            return /^[a-zA-Z\s]+$/.test(value);
+        },
+        messages: {
+            en: 'Only letters and spaces are allowed.',
+            es: 'Solo se permiten letras y espacios.'
+        }
+    });
+
+    $(document).ready(function () {
+        // Inicializar Parsley en el formulario
+        $('#frm_nuevo_detalle').parsley({
+            messages: {
+                'entrega_det': {
+                    required: 'Por favor ingrese la fecha estimada de entrega',
+                    date: 'Por favor ingrese una fecha válida',
+                    dateAfter: 'La fecha de entrega debe ser mayor o igual a la fecha de ingreso.'
+                },
+                'metodoPago_det': {
+                    required: 'Por favor seleccione el método de pago',
+                    pattern: 'Solo se permiten letras y espacios'
+                },
+                'estado_det': {
+                    required: 'Por favor seleccione el estado',
+                    pattern: 'Solo se permiten letras y espacios'
+                },
+                'total_det': {
+                    required: 'Por favor ingrese el total a pagar',
+                    type: 'Por favor ingrese un número válido'
+                }
+            }
+        });
+
+        $('#repuestos-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true
+        });
+
+        var repuestosContainer = document.getElementById('repuestos-table');
+        var totalInput = document.getElementById('total_det');
+        var entregaInput = document.getElementById('entrega_det');
+        var form = document.getElementById('frm_nuevo_detalle');
+
+        function calculateTotal() {
+            var total = 0;
+            var checkboxes = repuestosContainer.querySelectorAll('input[type="checkbox"]:checked');
+            checkboxes.forEach(function (checkbox) {
+                var repuestoItem = checkbox.closest('tr');
+                var precio = parseFloat(repuestoItem.cells[2].innerText || 0);
+                var cantidad = parseInt(repuestoItem.querySelector('.cantidad-input').value || 1);
+                total += precio * cantidad;
+            });
+            totalInput.value = total.toFixed(2);
+        }
+
+        repuestosContainer.addEventListener('change', function (e) {
+            if (e.target.type === 'checkbox') {
+                var cantidadInput = e.target.closest('tr').querySelector('.cantidad-input');
+                cantidadInput.disabled = !e.target.checked;
+            }
+            calculateTotal();
+        });
+
+        repuestosContainer.addEventListener('input', function (e) {
+            if (e.target.classList.contains('cantidad-input')) {
+                calculateTotal();
+            }
+        });
+
+        calculateTotal();  // Calculate total on page load in case there are pre-selected options
+
+        form.addEventListener('submit', function (e) {
+            var entregaDate = new Date(entregaInput.value);
+            var ingresoDate = new Date($('#fecha_ingreso').val());
+
+            if (entregaDate < ingresoDate) {
+                e.preventDefault();
+                alert('La fecha estimada de entrega no puede ser anterior a la fecha de ingreso.');
+            }
+        });
+    });
+</script>
+{% endblock %}

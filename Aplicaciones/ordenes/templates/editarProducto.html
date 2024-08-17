@@ -1,0 +1,174 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Producto{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Edición de Productos</h3>
+        </div>
+
+        <form id="frm_editar_producto" method="post" enctype="multipart/form-data" action="/actProducto/">
+            {% csrf_token %}
+            <input type="hidden" name="id_pro" id="id_pro" value="{{ productos.id_pro }}" class="form-control" required>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="nombre_pro">Nombre del Producto:</label>
+                    <input type="text" name="nombre_pro" id="nombre_pro" class="form-control" value="{{ productos.nombre_pro }}" placeholder="Ingrese el nombre del producto" required
+                           data-parsley-required-message="Por favor ingrese el nombre del producto"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="3"
+                           data-parsley-minlength-message="El nombre debe tener al menos 3 caracteres">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cantidad_pro">Precio:</label>
+                    <input type="text" name="cantidad_pro" id="cantidad_pro" class="form-control" value="{{ productos.cantidad_pro }}" placeholder="Ingrese el precio del producto" required
+                           data-parsley-required-message="Por favor ingrese el precio del producto"
+                           data-parsley-type="number"
+                           data-parsley-type-message="Por favor ingrese un número válido"
+                           data-parsley-pattern="^\d{1,4}(\.\d{1,2})?$"
+                           data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="id_cat">Categoría:</label>
+                    <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="id_cat" id="id_cat" required
+                            data-parsley-required-message="Por favor seleccione la categoría">
+                        <option value="">Seleccione la Categoría</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id_cat }}" {% if categoria.id_cat == productos.fkcategoria.id_cat %}selected{% endif %}>{{ categoria.tipo_cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="descripcion_pro">Descripción:</label>
+                    <textarea name="descripcion_pro" id="descripcion_pro" class="form-control" placeholder="Ingrese la descripción del producto" required
+                              data-parsley-required-message="Por favor ingrese la descripción del producto"
+                              data-parsley-minlength="5"
+                              data-parsley-minlength-message="La descripción debe tener al menos 5 caracteres">{{ productos.descripcion_pro }}</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="ftprodu">Foto del Producto:</label>
+                    <input type="file" name="ftprodu" id="ftprodu" accept="image/*" class="form-control-file" onchange="previewImage(event)"
+                           data-parsley-required-message="Por favor cargue una fotografía">
+                    <div id="drop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event)" style="border: 2px dashed #ccc; padding: 10px; text-align: center; margin-top: 10px;">
+                        Arrastra y suelta una imagen aquí
+                    </div>
+                    <img id="img-preview" class="img-preview" src="{% if productos.ftprodu %}{{ productos.ftprodu.url }}{% endif %}" alt="Previsualización de la imagen" style="{% if not productos.ftprodu %}display: none;{% endif %}">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/productosadmin" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #004ba6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: 5px;
+}
+
+.img-preview {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-top: 10px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    function previewImage(event) {
+        const [file] = event.target.files;
+        if (file) {
+            const imgPreview = document.getElementById('img-preview');
+            imgPreview.src = URL.createObjectURL(file);
+            imgPreview.style.display = 'block';
+        }
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        const dt = event.dataTransfer;
+        const files = dt.files;
+
+        if (files.length) {
+            const fileInput = document.getElementById('ftprodu');
+            fileInput.files = files;
+            previewImage({ target: { files } });
+        }
+    }
+
+    $(document).ready(function() {
+        $('#frm_editar_producto').parsley({
+            messages: {
+                "nombre_pro": {
+                    required: "Por favor ingrese el nombre del producto",
+                    pattern: "Solo se permiten letras y espacios",
+                    minlength: "El nombre debe tener al menos 3 caracteres"
+                },
+                "cantidad_pro": {
+                    required: "Por favor ingrese el precio del producto",
+                    type: "Por favor ingrese un número válido",
+                    pattern: "El precio debe tener un máximo de 4 dígitos y hasta 2 decimales"
+                },
+                "id_cat": {
+                    required: "Por favor seleccione la categoría"
+                },
+                "descripcion_pro": {
+                    required: "Por favor ingrese la descripción del producto",
+                    minlength: "La descripción debe tener al menos 5 caracteres"
+                },
+                "ftprodu": {
+                    required: "Por favor cargue una fotografía"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

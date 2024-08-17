@@ -1,0 +1,144 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Orden{% endblock %}
+{% block content %}<br><br>
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Editar Orden</h3>
+        </div>
+        <form action="/actOrden/" method="post" enctype="multipart/form-data" id="frm_editar_ordenes">
+            {% csrf_token %}
+            <input type="hidden" name="id_ord" value="{{ ordenes.id_ord }}">
+
+            <div class="form-group">
+                <label for="id_bic">Bicicleta:</label>
+                <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="id_bic" id="id_bic">
+                    <option value="">Seleccione la Bicicleta</option>
+                    {% for bici in bicis %}
+                    <option value="{{ bici.id_bic }}" {% if ordenes.bicicleta.id_bic == bici.id_bic %} selected {% endif %}>
+                        {{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha_ord">Fecha de Ingreso:</label>
+                <input type="date" name="fecha_ord" id="fecha_ord" class="form-control" value="{{ ordenes.fecha_ord|date:'Y-m-d' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_ord">Descripción:</label>
+                <textarea class="form-control" id="descripcion_ord" name="descripcion_ord" required>{{ ordenes.descripcion_ord }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="estado_det">Estado de la Orden:</label>
+                <select class="form-control" name="estado_det" id="estado_det">
+                    <option value="Recibida" {% if ordenes.detalle_set.first.estado_det == 'Recibida' %} selected {% endif %}>Recibida</option>
+                    <option value="Iniciado" {% if ordenes.detalle_set.first.estado_det == 'Iniciado' %} selected {% endif %}>Iniciado</option>
+                    <option value="List_ent" {% if ordenes.detalle_set.first.estado_det == 'List_ent' %} selected {% endif %}>Lista para entregar</option>
+                </select>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/ordenes" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #0F0CE1;
+    color: #ffffff;
+    padding: 1px 2px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 23px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+</style>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#frm_editar_ordenes").validate({
+      rules: {
+        "descripcion_ord": {
+          required: true
+        },
+        "fecha_ord": {
+          required: true
+        },
+        "bicicleta": {
+          required: true
+        },
+        "mecanico": {
+          required: true
+        },
+        "repuesto": {
+          required: true
+        }
+      },
+      messages: {
+        "descripcion_ord": {
+          required: "Por favor ingrese la descripción de la ordenes"
+        },
+        "fecha_ord": {
+          required: "Por favor ingrese la fecha de la ordenes"
+        },
+        "bicicleta": {
+          required: "Por favor ingrese la bicicleta asociada a la ordenes"
+        },
+        "mecanico": {
+          required: "Por favor ingrese el nombre del mecánico asignado"
+        },
+        "repuesto": {
+          required: "Por favor ingrese el repuesto utilizado"
+        }
+      }
+    });
+
+    $('#tbl_ordeneses').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'pdfHtml5',
+          messageTop: 'REPORTE DE ÓRDENES - DJANGO Y DATATABLES'
+        },
+        'print',
+        'csv'
+      ]
+    });
+  });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker();
+    });
+</script>
+{% endblock %}

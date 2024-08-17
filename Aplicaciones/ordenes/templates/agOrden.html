@@ -1,0 +1,116 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Agregar Orden{% endblock %}
+{% block content %}
+<br><br>
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Agregar Orden</h3>
+        </div>
+        <form action="/guardarOrden/" method="post" enctype="multipart/form-data" id="frm_nueva_orden">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="mecanico">Mecánico:</label>
+                <input type="text" class="form-control" value="{{ user.nombre }} {{ user.apellido }}" readonly>
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+            </div>
+            <div class="form-group">
+                <label for="id_bic">Bicicleta:</label>
+                <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="id_bic" id="id_bic" required
+                        data-parsley-required-message="Por favor seleccione una bicicleta">
+                    <option value="">Seleccione la Bicicleta</option>
+                    {% for bici in bicis %}
+                    <option value="{{ bici.id_bic }}">{{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha_ord">Fecha de Ingreso:</label>
+                <input type="date" name="fecha_ord" id="fecha_ord" class="form-control" required
+                       data-parsley-required-message="Por favor seleccione una fecha">
+            </div>
+            <div class="form-group">
+                <label for="descripcion_ord">Descripción:</label>
+                <textarea class="form-control" id="descripcion_ord" name="descripcion_ord" required
+                          data-parsley-required-message="Por favor ingrese una descripción"></textarea>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/ordenes" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #0F0CE1;
+    color: #ffffff;
+    padding: 1px 2px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Establece la fecha actual en la zona horaria de Ecuador
+        function getCurrentDateInEcuador() {
+            const options = { timeZone: 'America/Guayaquil', year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Intl.DateTimeFormat('es-EC', options).format(new Date());
+        }
+
+        const today = getCurrentDateInEcuador();
+        $('#fecha_ord').val(today.split('/').reverse().join('-')); // Formato YYYY-MM-DD
+
+        // Inicializa Parsley en el formulario
+        $('#frm_nueva_orden').parsley({
+            messages: {
+                "id_bic": {
+                    required: "Por favor seleccione una bicicleta"
+                },
+                "fecha_ord": {
+                    required: "Por favor seleccione una fecha"
+                },
+                "descripcion_ord": {
+                    required: "Por favor ingrese una descripción"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

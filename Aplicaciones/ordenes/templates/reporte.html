@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #e9ecef; /* Color de fondo general */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #ffffff; /* Color de fondo del contenedor */
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .header img {
+            max-width: 150px; /* Ajusta según el tamaño del logo */
+        }
+        h1, h2, h3 {
+            color: #343a40;
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .totals div {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .print-button {
+            text-align: right;
+        }
+    </style>
+    <title>Reporte de Orden</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://yourdomain.com/path/to/logo.png" alt="Logo de la Tienda">
+            <h1>TiendaAlmacen Vasquez Bike Shop</h1>
+            <p>Dirección: LATACUNGA SIXTO LANAS Y LEOPOLDO PINO ESQUINA</p>
+            <p>Teléfonos: 593995241928 - 593995241928</p>
+            <p>Email: almacenvasquezecuador@gmail.com</p>
+            <p>Pagina Web: <a href="http://almacenvasquez.com">almacenvasquez.com</a></p>
+        </div>
+
+        <div class="mb-4">
+            <h2>Datos del Cliente</h2>
+            <div class="row">
+                <div class="col-sm-6"><strong>Nombre:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</div>
+                <div class="col-sm-6"><strong>Identificación:</strong> {{ orden.bicicleta.cliente.id_cli }}</div>
+                <div class="col-sm-6"><strong>Teléfono:</strong> {{ orden.bicicleta.cliente.fono }}</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h2>Datos de la Bicicleta</h2>
+            <div class="row">
+              <div class="col-sm-6"><strong>Color de la Bicicleta:</strong> {{ orden.bicicleta.color_bic }}</div>
+              <div class="col-sm-6"><strong>Tipo de Bicicleta:</strong> {{ orden.bicicleta.tipo_bic }}</div>
+              <div class="col-sm-6"><strong>Marca de la Bicicleta:</strong> {{ orden.bicicleta.marca_bic }}</div>
+              <div class="col-sm-6"><strong>Nº de Serie:</strong> {{ orden.bicicleta.id_bic }}</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h2>Datos de la Orden</h2>
+            <div class="row">
+                <div class="col-sm-6"><strong>Número de Orden:</strong> {{ orden.id_ord }}</div><br>
+                <div class="col-sm-6"><strong>Fecha de Emisión:</strong> {{ orden.fecha_ord|date:"d M Y" }}</div><br>
+                <div class="col-sm-6"><strong>Descripción de la Orden:</strong> {{ orden.bicicleta.descripcion_bic }}</div>
+                <div class="col-sm-6"><strong>Dueño de la Bicicleta:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</div>
+                <div class="col-sm-6"><strong>Mecánico que Atendió:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h2>Detalle de Orden</h2>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha de Entrega</th>
+                        <th>Método de Pago</th>
+                        <th>Estado</th>
+                        <th>Repuestos Utilizados</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                        <tr>
+                            <td>{{ detalle.entrega_det|date:"d M Y" }}</td>
+                            <td>{{ detalle.metodoPago_det }}</td>
+                            <td>{{ detalle.estado_det }}</td>
+                            <td>
+                                {% for repuesto in detalle.fkrepuestos.all %}
+                                    {{ repuesto.nombre_rep }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>{{ detalle.total_det }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mb-4">
+            <h2>Totales</h2>
+            <div class="d-flex justify-content-end">
+                <div>
+                  {% for detalle in detalles %}
+                    <div><strong>Sub Total:</strong>{{ detalle.total_det }}</div>
+                    <div><strong>Total :</strong> {{ detalle.total_det }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="print-button">
+            <button class="btn btn-primary" onclick="printReport()">Imprimir</button>
+        </div>
+    </div>
+
+    <script>
+        function printReport() {
+            window.print();
+        }
+
+        {% if error_message %}
+            iziToast.error({
+                title: 'Error',
+                message: '{{ error_message }}',
+                position: 'topRight'
+            });
+        {% endif %}
+    </script>
+</body>
+</html>

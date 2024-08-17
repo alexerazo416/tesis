@@ -1,0 +1,119 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Editar Cliente{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Editar Cliente</h3>
+        </div>
+        <form action="/actCliente/" method="post" enctype="multipart/form-data" id="frm_editar_cliente">
+            {% csrf_token %}
+            <input type="hidden" name="id_cli" id="id_cli" value="{{ clientes.id_cli }}">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="nombre_cli">Nombre:</label>
+                    <input type="text" name="nombre_cli" id="nombre_cli" class="form-control" value="{{ clientes.nombre_cli }}" required
+                           data-parsley-required-message="Por favor ingrese el nombre del cliente"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="correo_cli">Correo:</label>
+                    <input type="email" name="correo_cli" id="correo_cli" class="form-control" value="{{ clientes.correo_cli }}" required
+                           data-parsley-required-message="Por favor ingrese el correo del cliente"
+                           data-parsley-type="email"
+                           data-parsley-type-message="Ingrese un correo electrónico válido">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="direccion_cli">Dirección:</label>
+                    <input type="text" name="direccion_cli" id="direccion_cli" class="form-control" value="{{ clientes.direccion_cli }}" required
+                           data-parsley-required-message="Por favor ingrese la dirección del cliente"
+                           data-parsley-minlength="5"
+                           data-parsley-minlength-message="La dirección debe tener al menos 5 caracteres">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="fono">Teléfono:</label>
+                    <input type="text" name="fono" id="fono" class="form-control" value="{{ clientes.fono }}" required
+                           data-parsley-required-message="Por favor ingrese el teléfono"
+                           data-parsley-pattern="^\d{7,15}$"
+                           data-parsley-pattern-message="El teléfono debe tener entre 7 y 15 dígitos">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="estatura_cli">Estatura:</label>
+                    <input type="number" name="estatura_cli" id="estatura_cli" class="form-control" value="{{ clientes.estatura_cli }}" required step="0.01"
+                           data-parsley-required-message="Por favor ingrese la estatura del cliente"
+                           data-parsley-min="0.5"
+                           data-parsley-min-message="La estatura debe ser al menos 0.5 metros"
+                           data-parsley-max="2.5"
+                           data-parsley-max-message="La estatura no puede ser mayor a 2.5 metros">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="nuevo_id_cli"></label>
+                    <input type="hidden" name="nuevo_id_cli" id="nuevo_id_cli" class="form-control" value="{{ clientes.id_cli }}" required>
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/clientes" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+  }
+
+  .form-header {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 20px;
+  }
+
+  .form-footer {
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .form-group input {
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .form-group input::placeholder {
+    color: #aaa;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#frm_editar_cliente').parsley();
+    });
+</script>
+{% endblock %}

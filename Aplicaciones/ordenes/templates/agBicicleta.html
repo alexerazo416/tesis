@@ -1,0 +1,143 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Agregar Bicicleta{% endblock %}
+{% block content %}<br><br>
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Agregar Bicicleta</h3>
+        </div>
+        <form action="/guardarBicicleta/" method="post" enctype="multipart/form-data" id="frm_nueva_bicicleta" data-parsley-validate>
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="cli">Seleccionar Dueño:</label>
+                    <select id="cli" class="form-select selectpicker" data-live-search="true" name="cli" required data-parsley-required-message="Por favor seleccione el cliente">
+                        <option value="">Seleccione el cliente</option>
+                        {% for clientes in cliente %}
+                        <option value="{{ clientes.id_cli }}">{{ clientes.nombre_cli }}{{ clientes.id_cli }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="color_bic">Color:</label>
+                    <input type="text" name="color_bic" id="color_bic" placeholder="Ingrese color de la bicicleta" class="form-control" required data-parsley-required-message="Por favor ingrese el color de la bicicleta" data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-pattern-message="Solo se permiten letras y espacios">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="marca_bic">Marca:</label>
+                    <input type="text" name="marca_bic" id="marca_bic" placeholder="Ingrese marca" class="form-control" required data-parsley-required-message="Por favor ingrese la marca de la bicicleta" data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-pattern-message="Solo se permiten letras y espacios">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="id_bic">Código de Bicicleta:</label>
+                  <input type="text" name="id_bic" id="id_bic" placeholder="Ingrese el código" class="form-control" required
+                  data-parsley-required-message="Por favor ingrese el código de la bicicleta"
+                  data-parsley-pattern="^[a-zA-Z0-9\s]+$"
+                  data-parsley-pattern-message="Solo se permiten letras, números y espacios">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="descripcion_bic">Descripción:</label>
+                    <input type="text" name="descripcion_bic" id="descripcion_bic" placeholder="Ingrese una descripción" class="form-control" required minlength="10" data-parsley-required-message="Por favor ingrese una descripción" data-parsley-minlength-message="La descripción debe tener al menos 10 caracteres">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="tipo_bic">Tipo:</label>
+                    <select name="tipo_bic" id="tipo_bic" class="form-control" required data-parsley-required-message="Por favor seleccione el tipo de bicicleta">
+                        <option value="">Seleccione el tipo</option>
+                        <option value="Montanera">Montañera</option>
+                        <option value="Bmx">Bmx</option>
+                        <option value="Electrica">Eléctrica</option>
+                        <option value="Clasica">Clásica</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="fotografia">Fotografía:</label>
+                    <input type="file" name="fotografia" id="fotografia" class="form-control-file" accept="image/*" onchange="previewImage(event)" data-parsley-filemimetype="image/jpeg, image/png" data-parsley-filemimetype-message="Solo se permiten archivos con extensiones jpg, jpeg o png">
+                    <div id="drop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event)" style="border: 2px dashed #ccc; padding: 10px; text-align: center; margin-top: 10px;">
+                        Arrastra y suelta una imagen aquí
+                    </div>
+                    <img id="img-preview" class="img-preview" src="#" alt="Previsualización de la imagen">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="verBicicletas" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #0F0CE1;
+    color: #ffffff;
+    padding: 1px 2px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 26px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.img-preview {
+    display: none;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-top: 10px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    function previewImage(event) {
+        const [file] = event.target.files;
+        if (file) {
+            const imgPreview = document.getElementById('img-preview');
+            imgPreview.src = URL.createObjectURL(file);
+            imgPreview.style.display = 'block';
+        }
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        const dt = event.dataTransfer;
+        const files = dt.files;
+
+        if (files.length) {
+            const fileInput = document.getElementById('fotografia');
+            fileInput.files = files;
+            previewImage({ target: { files } });
+        }
+    }
+</script>
+{% endblock %}

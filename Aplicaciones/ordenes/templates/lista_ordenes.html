@@ -1,0 +1,149 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Lista de Órdenes{% endblock %}
+{% block content %}
+<style>
+    #tbl_ordenes th,
+    #tbl_ordenes td {
+        font-size: 16px;
+    }
+
+    .form-header, .h2 {
+        background-color: #0F0CE1;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .btn-link {
+        padding: 0;
+        border: none;
+        background: none;
+    }
+
+    .modal-header {
+        background-color: #0F0CE1;
+        color: white;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+</style>
+<h1>Bienvenido, {{ user.nombre }} {{ user.apellido }}</h1>
+<p>Rol: {{ user.rol }}</p>
+<a href="{% url 'logout' %}">Cerrar sesión</a>
+
+<h2 class="h2">Lista de Órdenes</h2>
+<a href="{% url 'agOrden' %}" class="btn btn-primary">Agregar Orden</a>
+<a href="{% url 'calendario' %}" class="btn btn-primary">Abrir Calendario</a>
+<br><br>
+
+<table class="table table-striped table-bordered" id="tbl_ordenes">
+    <thead>
+        <tr>
+            <th>Nº</th>
+            <th>F.Ingreso</th>
+            <th>Descripción</th>
+            <th>Bicicleta</th>
+            <th>Mecánico</th>
+            <th>Dueño</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in ordenes %}
+        <tr>
+            <td>{{ orden.id_ord }}</td>
+            <td>{{ orden.fecha_ord|date:"d M Y" }}</td>
+            <td>
+                {% if orden.descripcion_ord|length > 20 %}
+                    {{ orden.descripcion_ord|slice:":10" }}
+                    <span id="descripcion-completa-{{ orden.id_ord }}" style="display: none;">
+                        {{ orden.descripcion_ord }}
+                    </span>
+                    <button class="btn btn-link" data-toggle="modal" data-target="#descripcionModal-{{ orden.id_ord }}">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                {% else %}
+                    {{ orden.descripcion_ord }}
+                {% endif %}
+            </td>
+            <td>{{ orden.bicicleta.descripcion_bic }}</td>
+            <td>{{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</td>
+            <td>{{ orden.bicicleta.cliente.nombre_cli }}</td>
+            <td>
+                <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info">Editar</a>
+                <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning">Detalles</a>
+                {% if orden.id_ord in detalles and detalles[orden.id_ord].detalles_completos %}
+                <a href="{% url 'reporte_orden' orden.id_ord %}" class="btn btn-secondary">Reporte</a>
+                {% endif %}
+                <a href="javascript:void(0)" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+
+        <!-- Modal para ver más detalles de la descripción -->
+        <div class="modal fade" id="descripcionModal-{{ orden.id_ord }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ orden.id_ord }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="descripcionModalLabel-{{ orden.id_ord }}">Descripción completa de la Orden {{ orden.id_ord }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ orden.descripcion_ord }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tbl_ordenes').DataTable({
+        });
+
+        $('.selectpicker').selectpicker();
+    });
+    function eliminarOrden(url) {
+      Swal.fire({
+        title: "¿Está seguro de eliminar la orden seleccionada?",
+        text: "",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SÍ"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          eliminarOrdenConfirmado(url);
+        } else {
+          console.log("Eliminación cancelada");
+        }
+      });
+    }
+
+    function eliminarOrdenConfirmado(url) {
+      window.location.href = url;
+    }
+</script>
+
+{% endblock %}

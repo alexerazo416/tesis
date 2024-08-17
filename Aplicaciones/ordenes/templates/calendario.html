@@ -1,0 +1,69 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang='es'>
+  <head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
+    <div class="row">
+        <div class="col-sm-4 color-box" style="background-color: #FF5733;">
+            <h3>Ordenes Finalizadas </h3>
+
+        </div>
+        <div class="col-sm-4 color-box" style="background-color: #5EFF33;">
+            <h3>Ordenes Iniciadas </h3>
+
+        </div>
+        <div class="col-sm-4 color-box" style="background-color: #336BFF;">
+            <h3>Ordenes en Recibidas </h3>
+
+        </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: 'es',
+          events: [
+            // Itera sobre los detalles de las órdenes
+            {% for detalle in detalles_ordenes %}
+              {
+                title: 'Orden de Trabajo #{{ detalle.orden.id_ord }}',
+                start: '{{ detalle.entrega_det|date:"Y-m-d" }}',
+                url: '/editarDetalle/{{ detalle.orden.id_ord }}',
+                {% if detalle.estado_det == "Recibida" %}
+                color: 'lightblue', // Color azul claro para órdenes recibidas
+                {% elif detalle.estado_det == "Iniciado" %}
+                color: 'lightgreen', // Color verde claro para órdenes iniciadas
+                {% elif detalle.estado_det == "List_ent" %}
+                color: 'red', // Color rojo para órdenes listas para entregar
+                {% endif %}
+              },
+            {% endfor %}
+          ],
+          eventClick: function(info) {
+            if (info.event.url) {
+              window.location.href = info.event.url;
+              return false; // Evitar que FullCalendar maneje el clic
+            }
+          }
+        });
+        calendar.render();
+      });
+    </script>
+
+
+
+
+  </head>
+  <body>
+    <div id='calendar'></div>
+  </body>
+</html>
+
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+<style>
+
+    #tbl_repuestos th,
+    #tbl_repuestos td {
+        font-size: 17px;
+    }
+</style>
+<div class="col-md-12">
+  <div class="card p-3">
+    <div class="card-Header">
+      <div class="d-flex align-items-center">
+                    <h4 class="card-title">LISTADO DE REPUESTOS</h4>
+                   <a href="{% url 'agRepuesto' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Repuesto</a>
+                  </div>
+    </div>
+  <div class="card-body">
+  <div class="table-responsive  ">
+    <table class="table table-striped table-bordered" id="tbl_repuestos">
+         <thead>
+           <tr>
+             <th> Codigo </th>
+             <th> NOMBRE </th>
+             <th> PRECIO </th>
+             <th> MARCA </th>
+             <th> DESCRIPCION </th>
+             <th> ACCIONES </th>
+           </tr>
+         </thead>
+       <tbody>
+         {% for repuesto in repuesto %}
+         <tr>
+           <td> {{repuesto.id_rep}}</td>
+           <td> {{repuesto.nombre_rep}}</td>
+           <td> {{repuesto.precio_rep}}</td>
+           <td> {{repuesto.marca_rep}}</td>
+           <td> {{repuesto.descripcion_rep}}</td>
+           <td>
+             <a href="/editarRepuesto/{{repuesto.id_rep}}" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
+             <a href="javascript:void(0)" onclick="eliminarRepuesto('{% url 'eliminarRepuesto' repuesto.id_rep %}');" class="btn btn-danger"> <i class="fas fa-trash-alt"></i></a>
+           </td>
+       </tr>
+       {% endfor %}
+   </tbody>
+ </table>
+ </div>
+ </div>
+
+
+
+     <script type="text/javascript">
+       function eliminarRepuesto(url) {
+         Swal.fire({
+           title: "¿Está seguro de eliminar el repuesto seleccionado?",
+           text: "",
+           icon: "question",
+           showCancelButton: true,
+           confirmButtonColor: "#3085d6",
+           cancelButtonColor: "#d33",
+           confirmButtonText: "SI"
+         }).then((result) => {
+           if (result.isConfirmed) {
+             eliminarRepuestoConfirmado(url);
+           } else {
+             console.log("Eliminación cancelada");
+           }
+         });
+       }
+
+       function eliminarRepuestoConfirmado(url) {
+         window.location.href = url;
+       }
+
+       {% if messages %}
+         {% for message in messages %}
+             Swal.fire({
+                 icon: "{% if message.tags == 'Error' %}error{% else %}error{% endif %}",  // Usa 'error' para el ícono de X
+                 title: "{% if message.tags == 'Error' %}Error{% else %}Error{% endif %}", // Título del mensaje
+                 text: "{{ message }}"  // Texto del mensaje
+             });
+         {% endfor %}
+     {% endif %}
+
+
+     </script>
+   <br><br>
+{% endblock %}

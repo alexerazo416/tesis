@@ -1,0 +1,135 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+<style>
+    #tbl_productos th,
+    #tbl_productos td {
+        font-size: 16px;
+        .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px; /* Ajusta el espacio interno si es necesario */
+    margin-right: 10px; /* Espacio entre los botones, ajusta según prefieras */
+}
+
+.btn-icon i {
+    font-size: 16px; /* Tamaño del icono, ajusta según prefieras */
+    margin-right: 0; /* Si deseas más separación entre icono y texto, ajusta este valor */
+}
+
+    }
+</style>
+
+<div class="col-md-12">
+  <div class="card p-3">
+    <div class="card-Header">
+      <div class="d-flex align-items-center">
+                    <h4 class="card-title">LISTADO DE PRODUCTOS</h4><br><br><br>
+                   <a href="{% url 'agProducto' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Productos</a><br>
+                  </div>
+    </div>
+    <div class="table-responsive  ">
+    <table class="table table-striped table-bordered" id="tbl_productos">
+        <thead>
+            <tr>
+              <th>Codigo Producto</th>
+                <th> NOMBRE </th>
+                <th> Precio </th>
+                <th> CATEGORÍA </th>
+                <th> DESCRIPCIÓN </th>
+                <th> FOTO </th>
+                <th> ACCIONES </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+              <td> {{ producto.id_pro }}</td>
+                <td> {{ producto.nombre_pro }}</td>
+                <td> {{ producto.cantidad_pro }}</td>
+                <td> {{ producto.fkcategoria.tipo_cat }}</td>
+                <td>
+                    {% if producto.descripcion_pro|length > 20 %}
+                    <p>
+                        {{ producto.descripcion_pro|slice:":20" }}
+                        <span id="descripcion-completa-{{ producto.id_pro }}" style="display: none;">
+                            {{ producto.descripcion_pro }}
+                        </span>
+                        <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#descripcionModal-{{ producto.id_pro }}">Ver más</button>
+                    </p>
+                    {% else %}
+                    {{ producto.descripcion_pro }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if producto.ftprodu %}
+                    <img src="{{ producto.ftprodu.url }}" alt="{{ producto.nombre_pro }}" width="50">
+                    {% else %}
+                    Sin foto
+                    {% endif %}
+                </td>
+                <td>
+                    <br>
+                    <a href="/editarProducto/{{ producto.id_pro }}" class="btn btn-info"> <i class="fas fa-edit"></i> </a>
+                    <a href="javascript:void(0)" onclick="eliminarCategoria('/eliminarCategoria/{{ categoria.id_cat }}');" class="btn btn-danger" title="Eliminar">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
+
+                </td>
+            </tr>
+            <div class="modal fade" id="descripcionModal-{{ producto.id_pro }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ producto.id_pro }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="descripcionModalLabel-{{ producto.id_pro }}">Descripción completa de {{ producto.nombre_pro }}</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ producto.descripcion_pro }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#tbl_productos').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true
+        });
+    });
+
+    function eliminarProducto(url) {
+        Swal.fire({
+            title: "¿Está seguro de eliminar el producto seleccionado?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "SI"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarProductoConfirmado(url);
+            } else {
+                console.log("Eliminación cancelada");
+            }
+        });
+    }
+
+    function eliminarProductoConfirmado(url) {
+        window.location.href = url;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+<style>
+
+    #tbl_bicicletas th,
+    #tbl_bicicletas td {
+        font-size: 18px;
+    }
+</style>
+<div class="col-md-12">
+  <div class="card p-3">
+    <div class="card-Header">
+      <div class="d-flex align-items-center">
+                    <h4 class="card-title">LISTADO DE BICICLETAS</h4>
+                   <a href="{% url 'agBicicleta' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Bicicleta</a>
+                  </div>
+    </div>
+  <div class="card-body">
+  <div class="table-responsive  ">
+       <table class="table table-striped table-bordered" id="tbl_bicicletas">
+
+         <thead>
+           <tr>
+             <th> Nº Serie </th>
+             <th> COLOR </th>
+             <th> MARCA </th>
+             <th> DESCRIPCION </th>
+             <th> TIPO </th>
+             <th> FT </th>
+             <th> DUEÑO </th>
+             <th> Acciones </th>
+           </tr>
+         </thead>
+       <tbody>
+         {% for bicicleta in bicicleta %}
+         <tr>
+           <td> {{bicicleta.id_bic}}</td>
+           <td> {{bicicleta.color_bic}}</td>
+           <td> {{bicicleta.marca_bic}}</td>
+           <td> {{bicicleta.descripcion_bic}}</td>
+           <td> {{bicicleta.tipo_bic}}</td>
+           <td>
+               {% if bicicleta.fotografia %}
+                   <a href="{{bicicleta.fotografia.url}}" target="_blank">
+                       <img src="{{bicicleta.fotografia.url}}" alt="" height="50px;" width="100px;">
+                   </a>
+               {% else %}
+                   <b> Sin foto </b>
+               {% endif %}
+           </td>
+           <td> {{bicicleta.cliente.nombre_cli}}</td>
+           <td>
+    <a href="/editarBicicleta/{{bicicleta.id_bic}}" class="btn btn-warning" title="Editar">
+        <i class="fas fa-edit"></i>
+    </a>
+    <a href="javascript:void(0)" onclick="eliminarBicicleta('/eliminarBicicleta/{{ bicicleta.id_bic }}');" class="btn btn-danger" title="Eliminar">
+        <i class="fas fa-trash-alt"></i>
+    </a>
+</td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+        </div>
+      </div>
+      </div>
+
+
+     <div class="row">
+       <div class="col-md-12">
+
+     <script>
+       function previewImage(event) {
+         const [file] = event.target.files;
+         if (file) {
+           const imgPreview = document.getElementById('img-preview');
+           imgPreview.src = URL.createObjectURL(file);
+           imgPreview.style.display = 'block';
+         }
+       }
+
+       function handleDrop(event) {
+         event.preventDefault();
+         const dt = event.dataTransfer;
+         const files = dt.files;
+
+         if (files.length) {
+           const fileInput = document.getElementById('fotografia');
+           fileInput.files = files;
+           previewImage({ target: { files } });
+         }
+       }
+
+
+
+       function eliminarBicicleta(url) {
+         Swal.fire({
+           title: "¿Está seguro de eliminar el cliente seleccionado?",
+           text: "",
+           icon: "question",
+           showCancelButton: true,
+           confirmButtonColor: "#3085d6",
+           cancelButtonColor: "#d33",
+           confirmButtonText: "SÍ"
+         }).then((result) => {
+           if (result.isConfirmed) {
+             eliminarBicicletaConfirmado(url);
+           } else {
+             console.log("Eliminación cancelada");
+           }
+         });
+       }
+
+       function eliminarBicicletaConfirmado(url) {
+         window.location.href = url;
+       }
+     </script>
+
+
+
+
+
+
+     {% endblock %}

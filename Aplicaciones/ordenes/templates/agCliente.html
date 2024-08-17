@@ -1,0 +1,193 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Registrar Cliente{% endblock %}
+{% block content %}
+<div class="col-md-12">
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Registrar Cliente</h3>
+        </div>
+        <form action="/guardarCliente/" method="post" enctype="multipart/form-data" id="frm_nuevo_cliente">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="id_cli">Cédula:</label>
+                    <input type="number" name="id_cli" id="id_cli" class="form-control" placeholder="Ingrese la cédula del cliente" required
+                           data-parsley-required-message="Por favor ingrese la cédula del cliente"
+                           data-parsley-valid-ecuadorian-id="true"
+                           data-parsley-valid-ecuadorian-id-message="Por favor ingrese una cédula ecuatoriana válida">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="nombre_cli">Nombre:</label>
+                    <input type="text" name="nombre_cli" id="nombre_cli" class="form-control" placeholder="Ingrese el nombre del cliente" required
+                           data-parsley-required-message="Por favor ingrese el nombre del cliente"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="correo_cli">Correo:</label>
+                    <input type="email" name="correo_cli" id="correo_cli" class="form-control" placeholder="Ingrese el correo del cliente" required
+                           data-parsley-required-message="Por favor ingrese el correo del cliente"
+                           data-parsley-type="email"
+                           data-parsley-type-message="Ingrese un correo electrónico válido">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="direccion_cli">Dirección:</label>
+                    <input type="text" name="direccion_cli" id="direccion_cli" class="form-control" placeholder="Ingrese la dirección del cliente" required
+                           data-parsley-required-message="Por favor ingrese la dirección del cliente"
+                           data-parsley-minlength="5"
+                           data-parsley-minlength-message="La dirección debe tener al menos 5 caracteres">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="fono">Teléfono:</label>
+                    <input type="number" name="fono" id="fono" class="form-control" placeholder="Ingrese el teléfono" required
+                           data-parsley-required-message="Por favor ingrese el teléfono"
+                           data-parsley-type="digits"
+                           data-parsley-type-message="Ingrese un número válido"
+                           data-parsley-minlength="7"
+                           data-parsley-maxlength="15"
+                           data-parsley-minlength-message="El teléfono debe tener al menos 7 dígitos"
+                           data-parsley-maxlength-message="El teléfono no puede tener más de 15 dígitos">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="estatura_cli">Estatura:</label>
+                    <input type="number" step="0.01" name="estatura_cli" id="estatura_cli" class="form-control" placeholder="Ingrese la estatura del cliente" required
+                           data-parsley-required-message="Por favor ingrese la estatura del cliente"
+                           data-parsley-type="number"
+                           data-parsley-type-message="Ingrese un número válido"
+                           data-parsley-min="0.5"
+                           data-parsley-max="2.5"
+                           data-parsley-min-message="La estatura debe ser al menos 0.5 metros"
+                           data-parsley-max-message="La estatura no puede ser más de 2.5 metros">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/clientes" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style media="screen">
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.form-header {
+    background-color: #004ba6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.form-footer {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 26px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group input {
+    border-radius: 5px;
+    width: 100%;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.form-group input::placeholder {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script>
+    // Función para validar la cédula ecuatoriana
+    function validarCedulaEcuatoriana(value) {
+        if (!/^\d{10}$/.test(value)) {
+            return false; // La cédula debe tener 10 dígitos
+        }
+
+        let suma = 0;
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        const digitoVerificador = parseInt(value.charAt(9), 10);
+
+        for (let i = 0; i < 9; i++) {
+            let digito = parseInt(value.charAt(i), 10) * coeficientes[i];
+            suma += digito > 9 ? digito - 9 : digito;
+        }
+
+        const modulo = (suma % 10);
+        const verificador = modulo === 0 ? 0 : 10 - modulo;
+
+        return verificador === digitoVerificador;
+    }
+
+    // Agrega la validación personalizada en Parsley.js
+    Parsley.addValidator('validEcuadorianId', {
+        validateString: function(value) {
+            return validarCedulaEcuatoriana(value);
+        },
+        messages: {
+            en: 'Por favor ingrese una cédula ecuatoriana válida'
+        }
+    });
+
+    // Inicializa Parsley en el formulario
+    $(document).ready(function() {
+        $('#frm_nuevo_cliente').parsley({
+            messages: {
+                "nombre_cli": {
+                    required: "Por favor ingrese el nombre del cliente",
+                    lettersAndSpaces: "Solo se permiten letras y espacios",
+                    minlength: "El nombre debe tener al menos 2 caracteres"
+                },
+                "correo_cli": {
+                    required: "Por favor ingrese el correo del cliente",
+                    email: "Ingrese un correo electrónico válido"
+                },
+                "direccion_cli": {
+                    required: "Por favor ingrese la dirección del cliente",
+                    minlength: "La dirección debe tener al menos 5 caracteres"
+                },
+                "fono": {
+                    required: "Por favor ingrese el teléfono",
+                    number: "Ingrese un número válido",
+                    minlength: "El teléfono debe tener al menos 7 dígitos",
+                    maxlength: "El teléfono no puede tener más de 15 dígitos"
+                },
+                "estatura_cli": {
+                    required: "Por favor ingrese la estatura del cliente",
+                    number: "Ingrese un número válido",
+                    min: "La estatura debe ser al menos 0.5 metros",
+                    max: "La estatura no puede ser más de 2.5 metros"
+                },
+                "id_cli": {
+                    required: "Por favor ingrese la cédula del cliente",
+                    validEcuadorianId: "Por favor ingrese una cédula ecuatoriana válida"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

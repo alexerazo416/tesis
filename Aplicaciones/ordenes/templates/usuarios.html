@@ -1,0 +1,160 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+<style media="screen">
+  .h1 {
+    text-align: center;
+  }
+</style>
+<h1 class="h1"> Listado de Usuarios </h1>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuarioModal">
+  Agregar Usuario
+</button>
+
+<div class="row">
+    <br>
+    <table class="table table-striped project-orders-table" id="tbl_usuarios">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Tipo </th>
+            <th> Usuario </th>
+            <th> Contraseña </th>
+            <th> Mecanico </th>
+            <th> ACCIONES </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td> {{ usuario.id_us }}</td>
+            <td> {{ usuario.tipo_us }}</td>
+            <td> {{ usuario.usuario }}</td>
+            <td> {{ usuario.contrasena }}</td>
+            <td> {{ usuario.fkmecanicos.nombre_mec }}</td>
+            <td>
+                <br>
+                <a href="/editarUsuario/{{ usuario.id_us }}" class="btn btn-info"> EDITAR </a>
+                <a href="javascript:void(0)" onclick="eliminarUsuario('/eliminarUsuario/{{ usuario.id_us }}');" class="btn btn-danger"> Eliminar </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<!-- Modal para agregar usuario -->
+<div class="modal fade" id="agregarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="agregarUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agregarUsuarioModalLabel">Agregar Usuario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="frm_nuevo_usuario" method="post" action="/guardarUsuario/">
+          {% csrf_token %}
+          <b>Mecanico</b>
+            <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker" name="id_mec" id="id_mec"   >
+          <option value="">Seleccione el Mecanico </option>
+          {% for mecanico in mecanicos %}
+              <option value="{{ mecanico.id_mec }}">{{ mecanico.nombre_mec }}</option>
+          {% endfor %}
+          </select><br><br>
+
+          <div class="form-group">
+            <label for="tipo_us">Tipo de Usuario</label>
+            <input type="text" class="form-control" id="tipo_us" name="tipo_us" required>
+          </div>
+          <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <input type="text" class="form-control" id="usuario" name="usuario" required>
+          </div>
+          <div class="form-group">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+          </div>
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <input type="text" class="form-control" id="estado_us" name="estado_us" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function eliminarUsuario(url) {
+    Swal.fire({
+      title: "¿Está seguro de eliminar el usuario seleccionado?",
+      text: "",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "SI"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        eliminarUsuarioConfirmado(url);
+      } else {
+        console.log("Eliminación cancelada");
+      }
+    });
+  }
+
+  function eliminarUsuarioConfirmado(url) {
+    window.location.href = url;
+  }
+</script>
+
+<script type="text/javascript">
+  $.validator.addMethod("lettersAndSpaces", function (value, element) {
+      return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+  }, "Solo se permiten letras y espacios");
+  $(document).ready(function () {
+    $("#frm_nuevo_usuario").validate({
+      rules: {
+        "tipo_us": {
+          required: true,
+        },
+        "usuario": {
+          required: true
+        },
+        "contrasena": {
+          required: true
+        }
+      },
+      messages: {
+        "tipo_us": {
+          required: "Por favor ingrese el tipo de usuario",
+        },
+        "usuario": {
+          required: "Por favor ingrese el nombre de usuario",
+        },
+        "contrasena": {
+          required: "Por favor ingrese la contraseña"
+        }
+      }
+    });
+
+    $('#tbl_usuarios').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'pdfHtml5',
+          messageTop: 'REPORTE DE USUARIOS - DJANGO Y DATATABLES'
+        },
+        'print',
+        'csv'
+      ]
+    });
+  });
+</script>
+{% endblock %}

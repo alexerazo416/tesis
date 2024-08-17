@@ -1,0 +1,51 @@
+label.error{
+  color:red;
+  font-weight: bold;
+}
+input.error,select.error,textarea.error {
+  border: 1px solid red;
+}
+/* Mover el campo de búsqueda a la izquierda */
+#tbl_repuestos_filter {
+    float: left;
+    margin-bottom: 10px; /* Añadir espacio entre el campo de búsqueda y la tabla */
+}
+/* Mover el campo de búsqueda a la izquierda */
+#tbl_bicicletas_filter {
+    float: left;
+    margin-bottom: 10px; /* Añadir espacio entre el campo de búsqueda y la tabla */
+}
+/* Mover el campo de búsqueda a la izquierda */
+#tbl_detalles_filter {
+    float: left;
+    margin-bottom: 10px; /* Añadir espacio entre el campo de búsqueda y la tabla */
+}
+/* Centrar los botones debajo de la tabla */
+.dataTables_wrapper .dt-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+/* Estilo para el contenedor de botones */
+.dt-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px; /* Ajusta la separación superior según sea necesario */
+}
+/* Estilo para cada botón */
+.dt-button {
+    margin-left: 5px; /* Ajusta el margen entre los botones */
+    background-color: #007BFF; /* Cambia el color de fondo según tus preferencias */
+    color: #FFFFFF; /* Cambia el color del texto según tus preferencias */
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+/* Estilo para el texto dentro del botón */
+.dt-button span {
+    font-weight: bold;
+}
+.b{
+  font-size: 13px;
+}

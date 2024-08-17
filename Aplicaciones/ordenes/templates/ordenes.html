@@ -1,0 +1,190 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block title %}Lista de Órdenes{% endblock %}
+{% block content %}
+
+<style>
+    .form-header, .h2 {
+        background-color: #0F0CE1;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .btn-link {
+        padding: 0;
+        border: none;
+        background: none;
+    }
+    .modal-header {
+        background-color: #0F0CE1;
+        color: white;
+    }
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .card {
+        flex: 1 1 calc(33% - 20px);
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: scale(1.05);
+    }
+    .card-body p {
+        margin: 0;
+    }
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #ddd;
+    }
+    .modal-body p {
+        white-space: pre-wrap;
+    }
+</style>
+
+<div class="container">
+
+    <div class="row my-3">
+        <div class="col-md-12">
+            <h2 class="h2">Lista de Órdenes</h2>
+        </div>
+        <div class="col-md-12 mb-3">
+            <a href="{% url 'agOrden' %}" class="btn btn-primary">Agregar Orden</a>
+            <a href="{% url 'calendario' %}" class="btn btn-primary">Abrir Calendario</a>
+
+   </div>
+        </div>
+
+    </div>
+    <div class="card-container">
+        {% for orden in ordenes %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Orden Nº {{ orden.id_ord }} - {{ orden.fecha_ord|date:"d M Y" }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Descripción:</strong>
+                    {% if orden.descripcion_ord|length > 20 %}
+                        {{ orden.descripcion_ord|slice:":20" }}...
+                        <button class="btn btn-link" data-toggle="modal" data-target="#descripcionModal-{{ orden.id_ord }}">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    {% else %}
+                        {{ orden.descripcion_ord }}
+                    {% endif %}
+                </p>
+                <p><strong>Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }}</p>
+                <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
+                <p><strong>Dueño:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</p>
+                <p><strong>Estado del Detalle:</strong></p>
+                <ul>
+                    {% for detalle in orden.detalles %}
+                        <li>{{ detalle.estado_det }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info icon-btn" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning icon-btn" title="Detalles">
+                    <i class="fas fa-list"></i>
+                </a>
+                <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn " title="Reporte Completo">
+                      <i class="fas fa-print"></i>
+                  </a>
+
+                <button class="btn btn-danger icon-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal para ver más detalles de la descripción -->
+        <div class="modal fade" id="descripcionModal-{{ orden.id_ord }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ orden.id_ord }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="descripcionModalLabel-{{ orden.id_ord }}">Descripción completa de la Orden {{ orden.id_ord }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ orden.descripcion_ord }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    function eliminarOrden(url) {
+        Swal.fire({
+            title: "¿Está seguro de eliminar la orden seleccionada?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "SÍ"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarOrdenConfirmado(url);
+            } else {
+                console.log("Eliminación cancelada");
+            }
+        });
+    }
+
+    function eliminarOrdenConfirmado(url) {
+        window.location.href = url;
+    }
+</script>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var selectEstado = document.getElementById('selectEstado');
+        var ordenesContainer = document.getElementById('ordenesContainer');
+
+        selectEstado.addEventListener('change', function () {
+            var selectedEstado = selectEstado.value;
+            var ordenes = ordenesContainer.getElementsByClassName('orden');
+
+            for (var i = 0; i < ordenes.length; i++) {
+                var orden = ordenes[i];
+                var estado = orden.getAttribute('data-estado');
+
+                if (selectedEstado === "" || estado === selectedEstado) {
+                    orden.style.display = "block";
+                } else {
+                    orden.style.display = "none";
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

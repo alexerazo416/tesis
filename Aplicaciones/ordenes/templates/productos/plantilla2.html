@@ -20,7 +20,7 @@
     <section style="padding-top: 50px; height: 150px; display: block;">
         <div class="row">
             <div class="col-md-4 logo-bike" style="padding-left: 150px;">
-                <img src="{% static 'images/1.webp' %}" alt="logo">
+              <!-- : <img src="{% static 'images/1.webp' %}" alt="logo"> -->
             </div>
             <div class="search-bar col-md-5" style="margin: 0; display: flex; align-items: center;">
                 <input type="text" placeholder="Buscar Productos" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
@@ -38,9 +38,8 @@
     <section style="background-color: #1b95f5; justify-content: center; display: flex; height: 60px;">
         <nav>
             <ul style="list-style: none; padding: 0; margin: 0; display: flex;">
-                <li><a style="color: white; padding: 0 15px;" href="{% url 'index' %}">Inicio</a></li>
-                <li><a style="color: white; padding: 0 15px;" href="{% url 'estado' %}">Ver el estado de mi bicicleta</a></li>
-                <li><a style="color: white; padding: 0 15px;" href="#">Contáctenos</a></li>
+                <li><a style="color: white; padding: 0 15px;" href="{% url 'index' %}">Inicio</a></li>&nbsp;
+                <li><a style="color: white; padding: 0 15px;" href="{% url 'estado' %}">Ver el estado de mi bicicleta</a></li>&nbsp;
                 <li><a style="color: white; padding: 0 15px;" href="{% url 'productos' %}">Tienda</a></li>
             </ul>
         </nav>

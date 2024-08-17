@@ -15,7 +15,7 @@
                     <select id="cli" class="form-select selectpicker" data-live-search="true" name="cli" required data-parsley-required-message="Por favor seleccione el cliente">
                         <option value="">Seleccione el cliente</option>
                         {% for clientes in cliente %}
-                        <option value="{{ clientes.id_cli }}">{{ clientes.nombre_cli }}{{ clientes.id_cli }}</option>
+                        <option value="{{ clientes.id_cli }}">{{ clientes.nombre_cli }} {{ clientes.apellido_cli }} - {{ 'Ci:' }} {{ clientes.id_cli }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -34,7 +34,6 @@
                   data-parsley-pattern="^[a-zA-Z0-9\s]+$"
                   data-parsley-pattern-message="Solo se permiten letras, números y espacios">
                 </div>
-
                 <div class="form-group col-md-6">
                     <label for="descripcion_bic">Descripción:</label>
                     <input type="text" name="descripcion_bic" id="descripcion_bic" placeholder="Ingrese una descripción" class="form-control" required minlength="10" data-parsley-required-message="Por favor ingrese una descripción" data-parsley-minlength-message="La descripción debe tener al menos 10 caracteres">
@@ -51,11 +50,23 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="fotografia">Fotografía:</label>
-                    <input type="file" name="fotografia" id="fotografia" class="form-control-file" accept="image/*" onchange="previewImage(event)" data-parsley-filemimetype="image/jpeg, image/png" data-parsley-filemimetype-message="Solo se permiten archivos con extensiones jpg, jpeg o png">
+                    <input type="file" name="fotografia" id="fotografia" class="form-control-file" accept="image/jpeg, image/png" required data-parsley-required-message="Por favor seleccione una imagen" data-parsley-filemimetype="image/jpeg, image/png" data-parsley-filemimetype-message="Solo se permiten archivos con extensiones jpg, jpeg o png">
                     <div id="drop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event)" style="border: 2px dashed #ccc; padding: 10px; text-align: center; margin-top: 10px;">
                         Arrastra y suelta una imagen aquí
                     </div>
                     <img id="img-preview" class="img-preview" src="#" alt="Previsualización de la imagen">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="grupo_bic">Grupo de la Bicicleta:</label>
+                  <input type="text" name="grupo_bic" id="grupo_bic" placeholder="Ingrese el grupo" class="form-control" required data-parsley-required-message="Por favor ingrese el grupo de la bicicleta">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="talla_bic">Talla de la bicicleta:</label>
+                  <input type="text" name="talla_bic" id="talla_bic" placeholder="Ingrese la talla" class="form-control" required data-parsley-required-message="Por favor ingrese la talla de la bicicleta">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="accesorios_bic">Accesorios de la bicicleta (Opcional):</label>
+                  <input type="text" name="accesorios_bic" id="accesorios_bic" placeholder="Ingrese los accesorios" class="form-control">
                 </div>
             </div>
             <div class="form-footer">

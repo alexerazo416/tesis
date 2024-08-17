@@ -26,19 +26,13 @@
         align-items: center;
         justify-content: center;
     }
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-top: 20px;
-    }
     .card {
-        flex: 1 1 calc(33% - 20px);
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         transition: transform 0.2s;
+        margin-bottom: 20px;
     }
     .card:hover {
         transform: scale(1.05);
@@ -59,7 +53,6 @@
 </style>
 
 <div class="container">
-
     <div class="row my-3">
         <div class="col-md-12">
             <h2 class="h2">Lista de Órdenes</h2>
@@ -67,75 +60,74 @@
         <div class="col-md-12 mb-3">
             <a href="{% url 'agOrden' %}" class="btn btn-primary">Agregar Orden</a>
             <a href="{% url 'calendario' %}" class="btn btn-primary">Abrir Calendario</a>
-
-   </div>
         </div>
-
     </div>
-    <div class="card-container">
+
+    <div class="row">
         {% for orden in ordenes %}
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    Orden Nº {{ orden.id_ord }} - {{ orden.fecha_ord|date:"d M Y" }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Descripción:</strong>
-                    {% if orden.descripcion_ord|length > 20 %}
-                        {{ orden.descripcion_ord|slice:":20" }}...
-                        <button class="btn btn-link" data-toggle="modal" data-target="#descripcionModal-{{ orden.id_ord }}">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                    {% else %}
-                        {{ orden.descripcion_ord }}
-                    {% endif %}
-                </p>
-                <p><strong>Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }}</p>
-                <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
-                <p><strong>Dueño:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</p>
-                <p><strong>Estado del Detalle:</strong></p>
-                <ul>
-                    {% for detalle in orden.detalles %}
-                        <li>{{ detalle.estado_det }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info icon-btn" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning icon-btn" title="Detalles">
-                    <i class="fas fa-list"></i>
-                </a>
-                <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn " title="Reporte Completo">
-                      <i class="fas fa-print"></i>
-                  </a>
-
-                <button class="btn btn-danger icon-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Modal para ver más detalles de la descripción -->
-        <div class="modal fade" id="descripcionModal-{{ orden.id_ord }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ orden.id_ord }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="descripcionModalLabel-{{ orden.id_ord }}">Descripción completa de la Orden {{ orden.id_ord }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{ orden.descripcion_ord }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        Orden Nº {{ orden.id_ord }} - {{ orden.fecha_ord|date:"d M Y" }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Descripción:</strong>
+                        {% if orden.descripcion_ord|length > 20 %}
+                            {{ orden.descripcion_ord|slice:":20" }}...
+                            <button class="btn btn-link" data-toggle="modal" data-target="#descripcionModal-{{ orden.id_ord }}">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        {% else %}
+                            {{ orden.descripcion_ord }}
+                        {% endif %}
+                    </p>
+                    <p><strong>Bicicleta:</strong> {{ orden.bicicleta.color_bic }} {{ orden.bicicleta.tipo_bic }} {{'Cod:' }}{{ orden.bicicleta.id_bic }}</p>
+                    <p><strong>Descripcion Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }} </p>
+                    <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
+                    <p><strong>Dueño:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</p>
+                    <p><strong>Estado del Detalle:</strong></p>
+                    <ul>
+                        {% for detalle in orden.detalles %}
+                            <li>{{ detalle.estado_det }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info icon-btn" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning icon-btn" title="Detalles">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn " title="Reporte Completo">
+                        <i class="fas fa-print"></i>
+                    </a>
+                    <button class="btn btn-danger icon-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
+
+            <!-- Modal para ver más detalles de la descripción -->
+            <div class="modal fade" id="descripcionModal-{{ orden.id_ord }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ orden.id_ord }}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="descripcionModalLabel-{{ orden.id_ord }}">Descripción completa de la Orden {{ orden.id_ord }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p>{{ orden.descripcion_ord }}</p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
         </div>
         {% endfor %}
     </div>

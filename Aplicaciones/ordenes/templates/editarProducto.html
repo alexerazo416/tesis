@@ -16,20 +16,18 @@
                     <label for="nombre_pro">Nombre del Producto:</label>
                     <input type="text" name="nombre_pro" id="nombre_pro" class="form-control" value="{{ productos.nombre_pro }}" placeholder="Ingrese el nombre del producto" required
                            data-parsley-required-message="Por favor ingrese el nombre del producto"
-                           data-parsley-pattern="^[a-zA-Z\s]+$"
-                           data-parsley-pattern-message="Solo se permiten letras y espacios"
                            data-parsley-minlength="3"
                            data-parsley-minlength-message="El nombre debe tener al menos 3 caracteres">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="cantidad_pro">Precio:</label>
-                    <input type="text" name="cantidad_pro" id="cantidad_pro" class="form-control" value="{{ productos.cantidad_pro }}" placeholder="Ingrese el precio del producto" required
-                           data-parsley-required-message="Por favor ingrese el precio del producto"
-                           data-parsley-type="number"
-                           data-parsley-type-message="Por favor ingrese un número válido"
-                           data-parsley-pattern="^\d{1,4}(\.\d{1,2})?$"
-                           data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales">
+                  <label for="cantidad_pro">Precio:</label>
+                  <input type="text" name="cantidad_pro" id="cantidad_pro" class="form-control" value="{{ productos.cantidad_pro }}" placeholder="Ingrese el precio del producto" required
+                  data-parsley-required-message="Por favor ingrese el precio del producto"
+                  data-parsley-type="text"
+                  data-parsley-pattern="^\d{1,4}([.,]\d{1,2})?$"
+                  data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales">
                 </div>
+
             </div>
             <div class="row">
                 <div class="form-group col-md-12">

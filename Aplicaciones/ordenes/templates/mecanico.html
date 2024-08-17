@@ -14,7 +14,7 @@
     <div class="card-Header">
       <div class="d-flex align-items-center">
                     <h4 class="card-title">LISTADO DE MECANICOS</h4>
-                   <a href="{% url 'register' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Mecanico</a>
+                   <a href="{% url 'register' %}" class="btn btn-primary btn-round ms-auto"><i class="fa fa-plus"></i>Agregar Mecánico</a>
                   </div>
     </div>
   <div class="card-body">
@@ -40,7 +40,14 @@
                     <td>{{ mecanico.apellido }}</td>
                     <td>{{ mecanico.telefono }}</td>
                     <td>{{ mecanico.email }}</td>
-                    <td>{{ mecanico.is_active }}</td>
+                    <td>
+                      {% if mecanico.is_active %}
+                      Activo
+                      {% else %}
+                      Inactivo
+                      {% endif %}
+                    </td>
+
                     <td>
                         <a href="{% url 'editar_mecanico' mecanico.id %}" class="btn btn-primary "><i class="fas fa-edit"></i></a>
                     </td>

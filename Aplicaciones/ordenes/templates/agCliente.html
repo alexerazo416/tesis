@@ -7,7 +7,7 @@
         <div class="form-header">
             <h3>Registrar Cliente</h3>
         </div>
-        <form action="/guardarCliente/" method="post" enctype="multipart/form-data" id="frm_nuevo_cliente">
+        <form action="/guardarCliente/" method="post" enctype="multipart/form-data" id="frm_nuevo_cliente" data-parsley-validate>
             {% csrf_token %}
             <div class="row">
                 <div class="form-group col-md-6">
@@ -18,16 +18,25 @@
                            data-parsley-valid-ecuadorian-id-message="Por favor ingrese una cédula ecuatoriana válida">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="nombre_cli">Nombre:</label>
+                    <label for="nombre_cli">Nombres:</label>
                     <input type="text" name="nombre_cli" id="nombre_cli" class="form-control" placeholder="Ingrese el nombre del cliente" required
                            data-parsley-required-message="Por favor ingrese el nombre del cliente"
                            data-parsley-pattern="^[a-zA-Z\s]+$"
                            data-parsley-pattern-message="Solo se permiten letras y espacios"
-                           data-parsley-minlength="2"
-                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
+                           data-parsley-minlength="3"
+                           data-parsley-minlength-message="El nombre debe tener al menos 3 caracteres">
                 </div>
             </div>
             <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="apellido_cli">Apellidos:</label>
+                    <input type="text" name="apellido_cli" id="apellido_cli" class="form-control" placeholder="Ingrese el apellido del cliente" required
+                           data-parsley-required-message="Por favor ingrese el apellido del cliente"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="3"
+                           data-parsley-minlength-message="El apellido debe tener al menos 3 caracteres">
+                </div>
                 <div class="form-group col-md-6">
                     <label for="correo_cli">Correo:</label>
                     <input type="email" name="correo_cli" id="correo_cli" class="form-control" placeholder="Ingrese el correo del cliente" required
@@ -35,6 +44,8 @@
                            data-parsley-type="email"
                            data-parsley-type-message="Ingrese un correo electrónico válido">
                 </div>
+            </div>
+            <div class="row">
                 <div class="form-group col-md-6">
                     <label for="direccion_cli">Dirección:</label>
                     <input type="text" name="direccion_cli" id="direccion_cli" class="form-control" placeholder="Ingrese la dirección del cliente" required
@@ -42,22 +53,18 @@
                            data-parsley-minlength="5"
                            data-parsley-minlength-message="La dirección debe tener al menos 5 caracteres">
                 </div>
+                <div class="form-group col-md-6">
+                    <label for="fono">Teléfono:</label>
+                    <input type="text" name="fono" id="fono" class="form-control" placeholder="Ingrese el teléfono" required
+                           data-parsley-required-message="Por favor ingrese el teléfono"
+                           data-parsley-pattern="^09\d{8}$"
+                           data-parsley-pattern-message="El teléfono debe comenzar con 09 y tener exactamente 10 dígitos">
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="fono">Teléfono:</label>
-                    <input type="number" name="fono" id="fono" class="form-control" placeholder="Ingrese el teléfono" required
-                           data-parsley-required-message="Por favor ingrese el teléfono"
-                           data-parsley-type="digits"
-                           data-parsley-type-message="Ingrese un número válido"
-                           data-parsley-minlength="7"
-                           data-parsley-maxlength="15"
-                           data-parsley-minlength-message="El teléfono debe tener al menos 7 dígitos"
-                           data-parsley-maxlength-message="El teléfono no puede tener más de 15 dígitos">
-                </div>
-                <div class="form-group col-md-6">
                     <label for="estatura_cli">Estatura:</label>
-                    <input type="number" step="0.01" name="estatura_cli" id="estatura_cli" class="form-control" placeholder="Ingrese la estatura del cliente" required
+                    <input type="number" step="0.01" name="estatura_cli" id="estatura_cli" class="form-control" placeholder="Ingrese la estatura del cliente Ejm: 1.60" required
                            data-parsley-required-message="Por favor ingrese la estatura del cliente"
                            data-parsley-type="number"
                            data-parsley-type-message="Ingrese un número válido"
@@ -172,9 +179,7 @@
                 },
                 "fono": {
                     required: "Por favor ingrese el teléfono",
-                    number: "Ingrese un número válido",
-                    minlength: "El teléfono debe tener al menos 7 dígitos",
-                    maxlength: "El teléfono no puede tener más de 15 dígitos"
+                    pattern: "El teléfono debe comenzar con 09 y tener exactamente 10 dígitos"
                 },
                 "estatura_cli": {
                     required: "Por favor ingrese la estatura del cliente",

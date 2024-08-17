@@ -2,9 +2,6 @@
 {% load static %}
 {% block title %}Listado de Clientes{% endblock %}
 {% block content %}
-
-
-
   <div class="col-md-12">
     <div class="card p-3">
       <div class="card-Header">
@@ -15,13 +12,12 @@
       </div>
     <div class="card-body">
     <div class="table-responsive  ">
-
-
     <table  class="display table table-striped table-hover" id="tbl_clientes">
       <thead>
         <tr>
           <th>Nº Cédula</th>
-          <th>Nombre y Apellido</th>
+          <th>Nombres</th>
+          <th>Apellidos</th>
           <th>Correo</th>
           <th>Dirección</th>
           <th>Estatura</th>
@@ -34,6 +30,7 @@
         <tr>
           <td>{{ cliente.id_cli }}</td>
           <td>{{ cliente.nombre_cli }}</td>
+          <td>{{ cliente.apellido_cli }}</td>
           <td>{{ cliente.correo_cli }}</td>
           <td>{{ cliente.direccion_cli }}</td>
           <td>{{ cliente.estatura_cli }}</td>

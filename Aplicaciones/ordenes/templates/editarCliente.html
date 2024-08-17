@@ -7,7 +7,7 @@
         <div class="form-header">
             <h3>Editar Cliente</h3>
         </div>
-        <form action="/actCliente/" method="post" enctype="multipart/form-data" id="frm_editar_cliente">
+        <form action="/actCliente/" method="post" enctype="multipart/form-data" id="frm_editar_cliente" data-parsley-validate>
             {% csrf_token %}
             <input type="hidden" name="id_cli" id="id_cli" value="{{ clientes.id_cli }}">
             <div class="row">
@@ -17,8 +17,17 @@
                            data-parsley-required-message="Por favor ingrese el nombre del cliente"
                            data-parsley-pattern="^[a-zA-Z\s]+$"
                            data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="3"
+                           data-parsley-minlength-message="El nombre debe tener al menos 3 caracteres">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="apellido_cli">Apellidos:</label>
+                    <input type="text" name="apellido_cli" id="apellido_cli" class="form-control" value="{{ clientes.apellido_cli }}" required
+                           data-parsley-required-message="Por favor ingrese el apellido del cliente"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
                            data-parsley-minlength="2"
-                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
+                           data-parsley-minlength-message="El apellido debe tener al menos 2 caracteres">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="correo_cli">Correo:</label>
@@ -34,24 +43,26 @@
                            data-parsley-minlength="5"
                            data-parsley-minlength-message="La dirección debe tener al menos 5 caracteres">
                 </div>
-            </div>
-            <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="fono">Teléfono:</label>
-                    <input type="text" name="fono" id="fono" class="form-control" value="{{ clientes.fono }}" required
-                           data-parsley-required-message="Por favor ingrese el teléfono"
-                           data-parsley-pattern="^\d{7,15}$"
-                           data-parsley-pattern-message="El teléfono debe tener entre 7 y 15 dígitos">
+                  <label for="fono">Teléfono:</label>
+                  <input type="text" name="fono" id="fono" class="form-control" value="{{ clientes.fono }}" required
+                  data-parsley-required-message="Por favor ingrese el teléfono"
+                  data-parsley-pattern="^09\d{8}$"
+                  data-parsley-pattern-message="El teléfono debe comenzar con 09 y tener exactamente 10 dígitos">
                 </div>
+
                 <div class="form-group col-md-4">
                     <label for="estatura_cli">Estatura:</label>
                     <input type="number" name="estatura_cli" id="estatura_cli" class="form-control" value="{{ clientes.estatura_cli }}" required step="0.01"
                            data-parsley-required-message="Por favor ingrese la estatura del cliente"
                            data-parsley-min="0.5"
                            data-parsley-min-message="La estatura debe ser al menos 0.5 metros"
-                           data-parsley-max="2.5"
-                           data-parsley-max-message="La estatura no puede ser mayor a 2.5 metros">
+                           data-parsley-max="2.1"
+                           data-parsley-max-message="La estatura no puede ser mayor a 2.1 metros">
                 </div>
+            </div>
+
+
                 <div class="form-group col-md-4">
                     <label for="nuevo_id_cli"></label>
                     <input type="hidden" name="nuevo_id_cli" id="nuevo_id_cli" class="form-control" value="{{ clientes.id_cli }}" required>

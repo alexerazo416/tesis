@@ -24,9 +24,6 @@
                 <div class="form-group col-md-4">
                     <label for="metodoPago_det">Método de Pago:</label>
                     <select class="form-control" name="metodoPago_det" id="metodoPago_det" required
-                            data-parsley-required-message="Por favor seleccione el método de pago"
-                            data-parsley-pattern="^[a-zA-Z\s]+$"
-                            data-parsley-pattern-message="Solo se permiten letras y espacios">
                         <option value="">Seleccione Método de Pago</option>
                         <option value="Efectivo" {% if detalles.metodoPago_det == "Efectivo" %} selected {% endif %}>Efectivo</option>
                         <option value="Transferencia" {% if detalles.metodoPago_det == "Transferencia" %} selected {% endif %}>Transferencia</option>
@@ -36,9 +33,7 @@
                 <div class="form-group col-md-4">
                     <label for="estado_det">Estado:</label>
                     <select class="form-control" name="estado_det" id="estado_det" required
-                            data-parsley-required-message="Por favor seleccione el estado"
-                            data-parsley-pattern="^[a-zA-Z\s]+$"
-                            data-parsley-pattern-message="Solo se permiten letras y espacios">
+
                         <option value="">Seleccione el Estado</option>
                         <option value="Recibida" {% if detalles.estado_det == "Recibida" %} selected {% endif %}>Recibida</option>
                         <option value="Iniciado" {% if detalles.estado_det == "Iniciado" %} selected {% endif %}>Iniciado</option>

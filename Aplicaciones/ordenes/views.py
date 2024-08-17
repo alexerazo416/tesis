@@ -117,17 +117,18 @@ def verClientes(request):
     return render(request, 'clientes.html', {'clientes': clientes})
 
 
-@role_required(allowed_roles=['ADMINISTRADOR'])
+@role_required(allowed_roles=['ADMINISTRADOR', 'MECANICO'])
 def agCliente(request):
     clientes=Clientes.objects.all()
     return  render(request, 'agCliente.html',{'clientes':clientes})
 
-
+@role_required(allowed_roles=['ADMINISTRADOR', 'MECANICO'])
 def guardarCliente(request):
     if request.method == 'POST':
         id_cli = request.POST["id_cli"]
         nombre_cli = request.POST["nombre_cli"].upper()
-        correo_cli = request.POST["correo_cli"].upper()
+        apellido_cli = request.POST["apellido_cli"].upper()
+        correo_cli = request.POST["correo_cli"]
         direccion_cli = request.POST["direccion_cli"]
         estatura_cli = request.POST["estatura_cli"]
         fono = request.POST["fono"]
@@ -138,6 +139,7 @@ def guardarCliente(request):
             if cliente_existente.is_deleted:
                 # Restaurar cliente eliminado lógicamente
                 cliente_existente.nombre_cli = nombre_cli
+                cliente_existente.apellido_cli = apellido_cli
                 cliente_existente.correo_cli = correo_cli
                 cliente_existente.direccion_cli = direccion_cli
                 cliente_existente.estatura_cli = estatura_cli
@@ -154,7 +156,15 @@ def guardarCliente(request):
                 correo_cli=correo_cli,
                 direccion_cli=direccion_cli,
                 estatura_cli=estatura_cli,
+                apellido_cli=apellido_cli,
                 fono=fono)
+            send_mail(
+                'Bienvenido a Vasquez Bike Shop',
+                f'Hola {nombre_cli} {apellido_cli},\n\n¡Bienvenido a Vasquez Bike Shop! Estamos felices de tenerte como cliente.\n\nGracias por confiar en nosotros.',
+                'ronalmena2020@gmail.com',  # Correo de origen
+                [correo_cli],
+                fail_silently=False,
+            )
             messages.success(request, 'Cliente guardado exitosamente.')
         return redirect('clientes')
     messages.error(request, 'Método no permitido')
@@ -190,6 +200,7 @@ def actCliente(request):
         id_cli_actual = request.POST["id_cli"]
         nuevo_id_cli = request.POST["nuevo_id_cli"]
         nombre_cli = request.POST["nombre_cli"].upper()
+        apellido_cli = request.POST["apellido_cli"].upper()
         correo_cli = request.POST["correo_cli"]
         direccion_cli = request.POST["direccion_cli"].upper()
         estatura_cli = request.POST["estatura_cli"]
@@ -203,18 +214,15 @@ def actCliente(request):
         except Clientes.DoesNotExist:
             messages.error(request, 'Cliente no encontrado.')
             return redirect('clientes')
-
         # Actualizar los campos del cliente
         cliEditar.id_cli = nuevo_id_cli
         cliEditar.nombre_cli = nombre_cli
+        cliEditar.apellido_cli = apellido_cli
         cliEditar.correo_cli = correo_cli
         cliEditar.direccion_cli = direccion_cli
         cliEditar.estatura_cli = estatura_cli
         cliEditar.fono = fono
-
-        # Guardar los cambios
         cliEditar.save()
-
         messages.success(request, 'Cliente Actualizado Exitosamente')
         return redirect('clientes')
     else:
@@ -433,9 +441,20 @@ def actOrden(request):
     # Enviar correo si el estado cambia a "Lista para entregar"
     if estado_anterior != 'List_ent' and estado_det == 'List_ent':
         cliente = detalleEditar.orden.bicicleta.cliente
+        bicicleta = detalleEditar.orden.bicicleta
         send_mail(
             'Tu orden está lista para entregar',
-            f'Hola {cliente.nombre_cli},\n\nTu orden con ID {detalleEditar.orden.id_ord} está lista para entregar.\n\nGracias por confiar en nosotros.',
+            f'Hola {cliente.nombre_cli},\n\nTu orden con ID {detalleEditar.orden.id_ord} está lista para entregar.\n'
+            f'Información de la bicicleta:\n'
+            f'ID: {bicicleta.id_bic}\n'
+            f'Color: {bicicleta.color_bic}\n'
+            f'Marca: {bicicleta.marca_bic}\n'
+            f'Descripción: {bicicleta.descripcion_bic}\n'
+            f'Tipo: {bicicleta.tipo_bic}\n'
+            f'Accesorios: {bicicleta.accesorios_bic}\n'
+            f'Grupo: {bicicleta.grupo_bic}\n'
+            f'Talla: {bicicleta.talla_bic}\n'
+            'Gracias por confiar en nosotros.',
             'ronalmena2020@gmail.com',  # Cambia esto al correo de origen
             [cliente.correo_cli],
             fail_silently=False,
@@ -469,6 +488,10 @@ def guardarBicicleta(request):
         marca_bic = request.POST["marca_bic"].upper()
         descripcion_bic = request.POST["descripcion_bic"].upper()
         tipo_bic = request.POST["tipo_bic"].upper()
+        grupo_bic = request.POST["grupo_bic"].upper()
+        talla_bic = request.POST["talla_bic"].upper()
+        accesorios_bic = request.POST["accesorios_bic"].upper()
+
         fotografia = request.FILES.get("fotografia")
         # Buscar bicicleta existente con el ID proporcionado
         bicicleta_existente = Bicicleta.objects.filter(id_bic=id_bic).first()
@@ -481,6 +504,9 @@ def guardarBicicleta(request):
                 bicicleta_existente.tipo_bic = tipo_bic
                 bicicleta_existente.fotografia = fotografia
                 bicicleta_existente.cliente = cliSeleccionado
+                bicicleta_existente.grupo_bic = grupo_bic
+                bicicleta_existente.talla_bic = talla_bic
+                bicicleta_existente.accesorios_bic = accesorios_bic
                 bicicleta_existente.restaurar()
                 messages.success(request, 'Bicicleta restaurada exitosamente.')
             else:
@@ -494,7 +520,10 @@ def guardarBicicleta(request):
                 descripcion_bic=descripcion_bic,
                 tipo_bic=tipo_bic,
                 fotografia=fotografia,
-                cliente=cliSeleccionado)
+                cliente=cliSeleccionado,
+                grupo_bic=grupo_bic,
+                talla_bic=talla_bic,
+                accesorios_bic=accesorios_bic)
             messages.success(request, 'Bicicleta guardada exitosamente.')
         return redirect('/verBicicletas')
     messages.error(request, 'Método no permitido')
@@ -533,6 +562,9 @@ def procesarActualizacionBicicleta(request):
     marca_bic = request.POST["marca_bic"].upper()
     descripcion_bic = request.POST["descripcion_bic"].upper()
     tipo_bic = request.POST["tipo_bic"].upper()
+    grupo_bic = request.POST["grupo_bic"].upper()
+    talla_bic = request.POST["talla_bic"].upper()
+    accesorios_bic = request.POST["accesorios_bic"].upper()
     fotografia = request.FILES.get("fotografia")
     bicicletaEditar = Bicicleta.objects.get(id_bic=id_bic)
     cliSeleccionado = Clientes.objects.get(id_cli=cli)
@@ -541,6 +573,9 @@ def procesarActualizacionBicicleta(request):
     bicicletaEditar.marca_bic = marca_bic
     bicicletaEditar.descripcion_bic = descripcion_bic
     bicicletaEditar.tipo_bic = tipo_bic
+    bicicletaEditar.grupo_bic = grupo_bic
+    bicicletaEditar.talla_bic = talla_bic
+    bicicletaEditar.accesorios_bic = accesorios_bic
     if fotografia:
         bicicletaEditar.fotografia = fotografia
     bicicletaEditar.save()
@@ -650,21 +685,28 @@ def procesarActualizacionDetalle(request):
         cantidad = int(request.POST.get(f"cantidad_{id_rep}", 1))
         total += float(repuesto.precio_rep) * cantidad
         detalleEditar.fkrepuestos.add(repuesto)
-
     detalleEditar.total_det = total
     detalleEditar.save()
-
     # Enviar correo si el estado cambia a "Lista para entregar"
     if estado_anterior != 'List_ent' and estado_det == 'List_ent':
         cliente = detalleEditar.orden.bicicleta.cliente
+        bicicleta = detalleEditar.orden.bicicleta
         send_mail(
             'Tu orden está lista para entregar',
-            f'Hola {cliente.nombre_cli},\n\nTu orden con ID {detalleEditar.orden.id_ord} está lista para entregar.\n\nGracias por confiar en nosotros.',
+            f'Hola {cliente.nombre_cli},\n\nTu orden con ID {detalleEditar.orden.id_ord} está lista para entregar.\n'
+            f'Información de la bicicleta:\n'
+            f'ID: {bicicleta.id_bic}\n'
+            f'Color: {bicicleta.color_bic}\n'
+            f'Marca: {bicicleta.marca_bic}\n'
+            f'Descripción: {bicicleta.descripcion_bic}\n'
+            f'Tipo: {bicicleta.tipo_bic}\n'
+            f'Accesorios: {bicicleta.accesorios_bic}\n'
+            f'Grupo: {bicicleta.grupo_bic}\n'
+            f'Talla: {bicicleta.talla_bic}\n'
+            'Gracias por confiar en nosotros.',
             'ronalmena2020@gmail.com',  # Cambia esto al correo de origen
             [cliente.correo_cli],
-            fail_silently=False,
-        )
-
+            fail_silently=False,)
     messages.success(request, 'Detalle ACTUALIZADO Exitosamente')
     return redirect('/ordenes')
 
@@ -675,6 +717,7 @@ def verProducto(request):
     productos = Producto.objects.all()
     categorias = Categoria.objects.all()
     return render(request, 'productos/producto.html', {'productos': productos,'categorias':categorias})
+
 @role_required(allowed_roles=['ADMINISTRADOR'])
 def verlisProductos(request):
     productos = Producto.objects.all()
@@ -984,7 +1027,6 @@ def logout_view(request):
 
 
 # Vista de registro de usuario
-# Vista de registro de usuario
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -1048,6 +1090,7 @@ def register_view(request):
         messages.success(request, 'Usuario registrado exitosamente')
         return redirect('mecanicos')
     return render(request, 'register.html')
+
 # Vista de permiso denegado
 
 def permission_denied_view(request):

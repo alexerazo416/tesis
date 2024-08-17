@@ -6,7 +6,7 @@
 
     #tbl_bicicletas th,
     #tbl_bicicletas td {
-        font-size: 18px;
+        font-size: 16px;
     }
 </style>
 <div class="col-md-12">
@@ -26,10 +26,13 @@
              <th> Nº Serie </th>
              <th> COLOR </th>
              <th> MARCA </th>
-             <th> DESCRIPCION </th>
+             <th> DESCRIPCIÓN </th>
              <th> TIPO </th>
-             <th> FT </th>
              <th> DUEÑO </th>
+             <th> TALLA </th>
+             <th> GRUPO </th>
+             <th> ACCESORIOS </th>
+             <th> Foto </th>
              <th> Acciones </th>
            </tr>
          </thead>
@@ -41,6 +44,10 @@
            <td> {{bicicleta.marca_bic}}</td>
            <td> {{bicicleta.descripcion_bic}}</td>
            <td> {{bicicleta.tipo_bic}}</td>
+           <td> {{bicicleta.cliente.nombre_cli}}</td>
+           <td> {{bicicleta.talla_bic}}</td>
+           <td> {{bicicleta.grupo_bic}}</td>
+           <td> {{bicicleta.accesorios_bic}}</td>
            <td>
                {% if bicicleta.fotografia %}
                    <a href="{{bicicleta.fotografia.url}}" target="_blank">
@@ -50,7 +57,6 @@
                    <b> Sin foto </b>
                {% endif %}
            </td>
-           <td> {{bicicleta.cliente.nombre_cli}}</td>
            <td>
     <a href="/editarBicicleta/{{bicicleta.id_bic}}" class="btn btn-warning" title="Editar">
         <i class="fas fa-edit"></i>

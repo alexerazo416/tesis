@@ -8,17 +8,17 @@
         <div class="form-header">
             <h3>Editar Información de la Bicicleta</h3>
         </div>
-        <form action="/procesarActualizacionBicicleta/" method="post" enctype="multipart/form-data" id="frm_editar_bicicleta">
+        <form action="/procesarActualizacionBicicleta/" method="post" enctype="multipart/form-data" id="frm_editar_bicicleta" data-parsley-validate>
             {% csrf_token %}
             <input type="hidden" name="id_bic" id="id_bic" class="form-control" value="{{ bicicleta.id_bic }}" required>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="cli">Cliente:</label>
+                    <label for="cli">Dueño:</label>
                     <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="cli" id="cli" required
                             data-parsley-required-message="Por favor seleccione el cliente">
                         <option value="">Seleccione el cliente</option>
                         {% for cliente in cliente %}
-                            <option value="{{ cliente.id_cli }}" {% if cliente.id_cli == bicicleta.cliente.id_cli %} selected {% endif %}>{{ cliente.nombre_cli }}</option>
+                            <option value="{{ cliente.id_cli }}" {% if cliente.id_cli == bicicleta.cliente.id_cli %} selected {% endif %}>{{ cliente.nombre_cli}}  {{ cliente.apellido_cli }} {{ 'Ci:' }} {{ cliente.id_cli }} </option>
                         {% endfor %}
                     </select>
                 </div>
@@ -26,42 +26,52 @@
                     <label for="color_bic">Color:</label>
                     <input type="text" name="color_bic" id="color_bic" value="{{ bicicleta.color_bic }}" placeholder="Ingrese color de la bicicleta" class="form-control" required
                            data-parsley-required-message="Por favor ingrese el color de la bicicleta"
-                           data-parsley-pattern="^[a-zA-Z0-9\s]+$"
-                           data-parsley-pattern-message="Solo se permiten letras, números y espacios">
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="marca_bic">Marca:</label>
                     <input type="text" name="marca_bic" id="marca_bic" value="{{ bicicleta.marca_bic }}" placeholder="Ingrese marca" class="form-control" required
                            data-parsley-required-message="Por favor ingrese la marca de la bicicleta"
-                           data-parsley-pattern="^[a-zA-Z0-9\s]+$"
-                           data-parsley-pattern-message="Solo se permiten letras, números y espacios">
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="descripcion_bic">Descripción:</label>
                     <textarea name="descripcion_bic" id="descripcion_bic" class="form-control" placeholder="Ingrese una descripción" required
                               minlength="10"
                               data-parsley-required-message="Por favor ingrese una descripción"
-                              data-parsley-minlength="10"
                               data-parsley-minlength-message="La descripción debe tener al menos 10 caracteres">{{ bicicleta.descripcion_bic }}</textarea>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="tipo_bic">Tipo:</label>
-                  <select name="tipo_bic" id="tipo_bic" class="form-control" required
-                          data-parsley-required-message="Por favor seleccione el tipo">
-                      <option value="">Seleccione el tipo</option>
-                      <option value="Montanera" {% if bicicleta.tipo_bic == "Montanera" %} selected {% endif %}>Montañera</option>
-                      <option value="Bmx" {% if bicicleta.tipo_bic == "Bmx" %} selected {% endif %}>Bmx</option>
-                      <option value="Electrica" {% if bicicleta.tipo_bic == "Electrica" %} selected {% endif %}>Eléctrica</option>
-                      <option value="Clasica" {% if bicicleta.tipo_bic == "Clasica" %} selected {% endif %}>Clásica</option>
-                      <option value="Gravel" {% if bicicleta.tipo_bic == "Gravel" %} selected {% endif %}>Gravel</option>
-                      <option value="Ruta" {% if bicicleta.tipo_bic == "Ruta" %} selected {% endif %}>Ruta</option>
-                      <option value="Hibrida" {% if bicicleta.tipo_bic == "Hibrida" %} selected {% endif %}>Híbrida</option>
-                  </select>
-              </div>
+                    <label for="tipo_bic">Tipo:</label>
+                    <select name="tipo_bic" id="tipo_bic" class="form-control" required
+                            data-parsley-required-message="Por favor seleccione el tipo">
+                        <option value="">Seleccione el tipo</option>
+                        <option value="Montanera" {% if bicicleta.tipo_bic == "Montanera" %} selected {% endif %}>Montañera</option>
+                        <option value="Bmx" {% if bicicleta.tipo_bic == "Bmx" %} selected {% endif %}>Bmx</option>
+                        <option value="Electrica" {% if bicicleta.tipo_bic == "Electrica" %} selected {% endif %}>Eléctrica</option>
+                        <option value="Clasica" {% if bicicleta.tipo_bic == "Clasica" %} selected {% endif %}>Clásica</option>
+                        <option value="Gravel" {% if bicicleta.tipo_bic == "Gravel" %} selected {% endif %}>Gravel</option>
+                        <option value="Ruta" {% if bicicleta.tipo_bic == "Ruta" %} selected {% endif %}>Ruta</option>
+                        <option value="Hibrida" {% if bicicleta.tipo_bic == "Hibrida" %} selected {% endif %}>Híbrida</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="grupo_bic">Grupo de la Bicicleta:</label>
+                    <input type="text" name="grupo_bic" id="grupo_bic" value="{{ bicicleta.grupo_bic }}" placeholder="Ingrese el grupo" class="form-control" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="talla_bic">Talla de la bicicleta:</label>
+                    <input type="text" name="talla_bic" id="talla_bic" value="{{ bicicleta.talla_bic }}" placeholder="Ingrese la talla" class="form-control" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="accesorios_bic">Accesorios de la bicicleta (Opcional):</label>
+                    <input type="text" name="accesorios_bic" id="accesorios_bic" value="{{ bicicleta.accesorios_bic }}" placeholder="Ingrese los accesorios" class="form-control">
+                </div>
                 <div class="form-group col-md-6">
                     <label for="fotografia">Fotografía:</label>
-                    <input type="file" name="fotografia" id="fotografia" accept="image/*" class="form-control-file" onchange="previewImage(event)"
-                           data-parsley-required-message="Por favor cargue una fotografía">
+                    <input type="file" name="fotografia" id="fotografia" accept="image/*" class="form-control-file" onchange="previewImage(event)">
                     <div id="drop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event)" style="border: 2px dashed #ccc; padding: 10px; text-align: center; margin-top: 10px;">
                         Arrastra y suelta una imagen aquí
                     </div>
@@ -131,5 +141,26 @@
     $(document).ready(function() {
         $('#frm_editar_bicicleta').parsley();
     });
+
+    function previewImage(event) {
+        const [file] = event.target.files;
+        if (file) {
+            const imgPreview = document.getElementById('img-preview');
+            imgPreview.src = URL.createObjectURL(file);
+            imgPreview.style.display = 'block';
+        }
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        const dt = event.dataTransfer;
+        const files = dt.files;
+
+        if (files.length) {
+            const fileInput = document.getElementById('fotografia');
+            fileInput.files = files;
+            previewImage({ target: { files } });
+        }
+    }
 </script>
 {% endblock %}

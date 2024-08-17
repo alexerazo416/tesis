@@ -59,7 +59,6 @@
                     <label for="rol">Rol:</label>
                     <select name="rol" id="rol" class="form-control" required
                             data-parsley-required-message="Por favor seleccione un rol">
-                        <option value="ADMINISTRADOR" {% if mecanico.rol == 'ADMINISTRADOR' %}selected{% endif %}>Administrador</option>
                         <option value="MECANICO" {% if mecanico.rol == 'MECANICO' %}selected{% endif %}>Mecánico</option>
                     </select>
                     <span class="valid-feedback">✔</span>

@@ -124,6 +124,8 @@ path('plant',views.verPlan,name="plant"),
 
  path('lista_ordenes/', views.lista_ordenes, name='lista_ordenes'),
 
+ path('productos/<str:producto_id>/', views.detalle_producto, name='detalle_producto'),
+
 
 
 ]

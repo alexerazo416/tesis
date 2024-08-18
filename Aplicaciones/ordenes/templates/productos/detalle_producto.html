@@ -1,0 +1,52 @@
+{% extends "./plantilla2.html" %}
+{% load static %}
+{% block contenido %}<br><br>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<style>
+    .product-detail-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+    }
+    .product-detail-price, .product-detail-category {
+        text-align: center;
+    }
+    .product-detail-image {
+      max-width: 20%; /* Reduce el ancho máximo de la imagen */
+      height: auto;
+      margin: 0 auto; /* Centra la imagen horizontalmente */
+      display: block; /
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                {% if producto.ftprodu %}
+                <img src="{{ producto.ftprodu.url }}" class="card-img-top product-detail-image" alt="{{ producto.nombre_pro }}">
+                {% else %}
+                <img src="{% static 'default.jpg' %}" class="card-img-top product-detail-image" alt="Sin foto">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title product-detail-title">{{ producto.nombre_pro }}</h5>
+                    <p class="card-text product-detail-price"><strong>Precio:</strong> {{ producto.cantidad_pro }}{{ '$' }}</p>
+                    <p class="card-text product-detail-category"><strong>Categoría:</strong> {{ producto.fkcategoria.tipo_cat }}</p>
+                    <p class="card-text"><strong>Descripción:</strong> {{ producto.descripcion_pro }}</p>
+                    <a href="https://wa.me/593960611425?text=Hola, estoy interesado en el producto {{ producto.nombre_pro }} de la categoría {{ producto.fkcategoria.tipo_cat }} con un precio de {{ producto.cantidad_pro }} $" class="btn btn-success" target="_blank">Contactar por WhatsApp</a>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'productos' %}" class="btn btn-danger">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

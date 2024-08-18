@@ -20,6 +20,8 @@ from .models import Usuario
 from django.core.exceptions import PermissionDenied
 from .utils import role_required
 from django.db.models.deletion import ProtectedError
+from django.contrib.sessions.models import Session
+
 
 
 
@@ -1162,3 +1164,11 @@ def detalle_orden(request, orden_id):
         'error_message': error_message
     }
     return render(request, 'reporte.html', context)
+
+
+
+#Evitar Modales seccion Tienda
+
+def detalle_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id_pro=producto_id)
+    return render(request, 'productos/detalle_producto.html', {'producto': producto})

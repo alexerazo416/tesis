@@ -10,7 +10,9 @@
         <form action="/procesarActualizacionDetalle/" method="post" enctype="multipart/form-data" id="frm_nuevo_detalle">
             {% csrf_token %}
             <input type="hidden" name="id_det" value="{{ detalles.id_det }}">
-            <input type="hidden" id="fecha_ingreso" value="{{ fecha_ingreso|date:'Y-m-d' }}"> <!-- Campo oculto con la fecha de ingreso -->
+            <b>Fecha de Ingreso</b>
+            <input type="date" id="fecha_ingreso" value="{{ fecha_ingreso|date:'Y-m-d' }}" readonly><br><br>
+
             <div class="row">
                 <div class="form-group col-md-4">
                     <label for="entrega_det">Fecha estimada de Entrega:</label>
@@ -44,7 +46,7 @@
             <div class="form-group">
                 <label for="repuestos">Repuestos Usados:</label>
                 <button type="button" class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#repuestos-container">Mostrar/Ocultar Repuestos</button>
-                <div id="repuestos-container" class="collapse">
+                <div id="repuestos-container" class="collapse table-responsive">
                     <table id="repuestos-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>

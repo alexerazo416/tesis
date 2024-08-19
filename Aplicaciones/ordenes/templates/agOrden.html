@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <label for="id_bic">Bicicleta:</label>
-                <select data-live-search="true" data-live-search-style="startsWith" class="selectpicker form-control" name="id_bic" id="id_bic" required
+                <select class="form-select selectpicker" data-live-search="true"  class="selectpicker form-control" name="id_bic" id="id_bic" required
                         data-parsley-required-message="Por favor seleccione una bicicleta">
                     <option value="">Seleccione la Bicicleta</option>
                     {% for bici in bicis %}
@@ -86,6 +86,9 @@
 {% block extra_js %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/css/bootstrap-select.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
 <script>
     $(document).ready(function() {
         // Establece la fecha actual en la zona horaria de Ecuador

@@ -23,6 +23,13 @@ from django.db.models.deletion import ProtectedError
 from django.contrib.sessions.models import Session
 from django.contrib.auth.views import LogoutView
 
+#Error 404 pagina no encontrada
+def error_404(request, exception):
+    return render(request, '404.html', status=404)
+
+
+
+
 
 
 #------------Ver  el index---------
@@ -1172,7 +1179,3 @@ def detalle_orden(request, orden_id):
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, id_pro=producto_id)
     return render(request, 'productos/detalle_producto.html', {'producto': producto})
-
-
-def custom_404_view(request, exception):
-    return render(request, '404.html', status=404)

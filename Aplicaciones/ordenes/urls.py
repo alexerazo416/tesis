@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls import handler404
 from . import views
 
-
+# Configura el manejador de error 404
+handler404 = views.error_404
 
 
 urlpatterns=[
@@ -128,4 +129,3 @@ path('plant',views.verPlan,name="plant"),
 
 
 ]
-handler404 = 'Aplicaciones.ordenes.views.custom_404'

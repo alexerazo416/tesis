@@ -21,7 +21,7 @@ from django.core.exceptions import PermissionDenied
 from .utils import role_required
 from django.db.models.deletion import ProtectedError
 from django.contrib.sessions.models import Session
-
+from django.contrib.auth.views import LogoutView
 
 
 

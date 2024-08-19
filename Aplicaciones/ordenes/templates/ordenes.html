@@ -15,17 +15,6 @@
         border: none;
         background: none;
     }
-    .modal-header {
-        background-color: #0F0CE1;
-        color: white;
-    }
-    .icon-btn {
-        width: 36px;
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
     .card {
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -47,8 +36,18 @@
         background-color: #f8f9fa;
         border-top: 1px solid #ddd;
     }
-    .modal-body p {
-        white-space: pre-wrap;
+    .description-container {
+        display: none;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+    }
+    .show-more-btn {
+        cursor: pointer;
+        color: #0F0CE1;
+        border: none;
+        background: none;
+        text-decoration: underline;
     }
 </style>
 
@@ -74,15 +73,19 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Descripción:</strong>
-                        {% if orden.descripcion_ord|length > 20 %}
-                            {{ orden.descripcion_ord|slice:":20" }}...
-                            <button class="btn btn-link" data-toggle="modal" data-target="#descripcionModal-{{ orden.id_ord }}">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
+                        {% if orden.descripcion_ord|length > 50 %}
+                            <span id="short-description-{{ orden.id_ord }}">{{ orden.descripcion_ord|slice:":50" }}...</span>
+                            <button class="show-more-btn" id="toggle-btn-{{ orden.id_ord }}" onclick="toggleDescription('{{ orden.id_ord }}')">Ver más</button>
                         {% else %}
-                            {{ orden.descripcion_ord }}
+                            <span>{{ orden.descripcion_ord }}</span>
                         {% endif %}
                     </p>
+                    {% if orden.descripcion_ord|length > 50 %}
+                        <div id="description-container-{{ orden.id_ord }}" class="description-container">
+                            <p>{{ orden.descripcion_ord }}</p>
+                            <button class="show-more-btn" onclick="toggleDescription('{{ orden.id_ord }}')">Ver menos</button>
+                        </div>
+                    {% endif %}
                     <p><strong>Bicicleta:</strong> {{ orden.bicicleta.color_bic }} {{ orden.bicicleta.tipo_bic }} {{'Cod:' }}{{ orden.bicicleta.id_bic }}</p>
                     <p><strong>Descripcion Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }} </p>
                     <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
@@ -109,25 +112,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Modal para ver más detalles de la descripción -->
-            <div class="modal fade" id="descripcionModal-{{ orden.id_ord }}" tabindex="-1" role="dialog" aria-labelledby="descripcionModalLabel-{{ orden.id_ord }}" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="descripcionModalLabel-{{ orden.id_ord }}">Descripción completa de la Orden {{ orden.id_ord }}</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <p>{{ orden.descripcion_ord }}</p>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-          </div>
-      </div>
-  </div>
-
         </div>
         {% endfor %}
     </div>
@@ -155,28 +139,22 @@
     function eliminarOrdenConfirmado(url) {
         window.location.href = url;
     }
+
+    function toggleDescription(id) {
+        var shortDescription = document.getElementById('short-description-' + id);
+        var container = document.getElementById('description-container-' + id);
+        var btn = document.getElementById('toggle-btn-' + id);
+
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            shortDescription.style.display = 'none';
+            btn.textContent = 'Ver menos';
+        } else {
+            container.style.display = 'none';
+            shortDescription.style.display = 'inline';
+            btn.textContent = 'Ver más';
+        }
+    }
 </script>
 
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var selectEstado = document.getElementById('selectEstado');
-        var ordenesContainer = document.getElementById('ordenesContainer');
-
-        selectEstado.addEventListener('change', function () {
-            var selectedEstado = selectEstado.value;
-            var ordenes = ordenesContainer.getElementsByClassName('orden');
-
-            for (var i = 0; i < ordenes.length; i++) {
-                var orden = ordenes[i];
-                var estado = orden.getAttribute('data-estado');
-
-                if (selectedEstado === "" || estado === selectedEstado) {
-                    orden.style.display = "block";
-                } else {
-                    orden.style.display = "none";
-                }
-            }
-        });
-    });
-</script>
 {% endblock %}

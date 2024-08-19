@@ -1172,3 +1172,7 @@ def detalle_orden(request, orden_id):
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, id_pro=producto_id)
     return render(request, 'productos/detalle_producto.html', {'producto': producto})
+
+
+def custom_404_view(request, exception):
+    return render(request, '404.html', status=404)

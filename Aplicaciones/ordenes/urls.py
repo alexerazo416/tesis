@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls import handler404
 from . import views
 
-handler404 = 'Aplicaciones.ordenes.views.custom_404'
 
 
 
@@ -129,3 +128,4 @@ path('plant',views.verPlan,name="plant"),
 
 
 ]
+handler404 = 'Aplicaciones.ordenes.views.custom_404'

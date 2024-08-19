@@ -123,3 +123,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'ronalmena2020@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'wobs sqvh saao mfvb')
 EMAIL_USE_TLS = True
+
+LOGOUT_REDIRECT_URL = 'login'

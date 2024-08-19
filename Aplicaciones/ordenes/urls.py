@@ -105,7 +105,7 @@ path('actUsuario/',views.actUsuario),
 
 #Login por tipo de usuario
  path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', views.register_view, name='register'),
     path('403/', views.permission_denied_view, name='permission_denied'),
     path('clientes/', views.verClientes, name='clientes'),

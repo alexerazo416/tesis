@@ -487,10 +487,10 @@
 								</div>
 							</li>
 
-              <a class="profile-pic d-flex align-items-center" href="{% url 'logout' %}"  aria-expanded="false">
-      <span class="profile-username d-flex align-items-center">
-          <span style="color: black;">Cerrar Sesión</span>
-      </span>
+              <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+        </form>
   </a>
 
 

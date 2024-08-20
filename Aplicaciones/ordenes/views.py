@@ -20,10 +20,17 @@ from .models import Usuario
 from django.core.exceptions import PermissionDenied
 from .utils import role_required
 from django.db.models.deletion import ProtectedError
-from django.contrib.sessions.models import Session
 from django.contrib.auth.views import LogoutView
-
+#Recuperacion Contraseña
 from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+
+
+
+
+
 
 
 #Error 404 pagina no encontrada

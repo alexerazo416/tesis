@@ -62,13 +62,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'BikeShop.wsgi.application'
 
 # Database
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bikeshop2',
         'USER': 'root',
-        'PASSWORD': 'alexerazo416',
-        'HOST': '35.225.43.70',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }

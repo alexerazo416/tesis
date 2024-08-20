@@ -23,6 +23,9 @@ from django.db.models.deletion import ProtectedError
 from django.contrib.sessions.models import Session
 from django.contrib.auth.views import LogoutView
 
+from django.contrib.auth.tokens import default_token_generator
+
+
 #Error 404 pagina no encontrada
 def error_404(request, exception):
     return render(request, '404.html', status=404)

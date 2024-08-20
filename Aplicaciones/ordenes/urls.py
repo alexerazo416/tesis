@@ -5,7 +5,7 @@ from .views import *
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import handler404
 from . import views
-
+from django.views.generic import TemplateView
 # Configura el manejador de error 404
 handler404 = views.error_404
 
@@ -103,7 +103,7 @@ path('actUsuario/',views.actUsuario),
     path('403/', views.permission_denied_view, name='permission_denied'),
     path('clientes/', views.verClientes, name='clientes'),
     path('ordenes/', views.verOrdenes, name='ordenes'),
-    
+
 #Menu inicio despues del login Admin
 path('menuadmin',views.menuAdmin,name="menuadmin"),
 #Reportes de ordenes

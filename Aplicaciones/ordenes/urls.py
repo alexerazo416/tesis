@@ -86,9 +86,6 @@ path('agCategoria',views.agCategoria,name="agCategoria"),
 #Modal de ventas de productos en especificos
  path('obtenerProducto/<int:id_pro>/', obtener_producto, name='obtener_producto'),
  path('calendario',views.vista_calendario,name="calendario"),
- #
-
-
 
 #--------------------Usuarios-------------------
 path('usuarios',views.verUsuarios,name="usuarios"),
@@ -96,12 +93,8 @@ path('guardarUsuario/',views.guardarUsuario),
 path('editarUsuario/<id_us>',views.editarUsuario),
 path('actUsuario/',views.actUsuario),
 
-
-
-
 #-----------------ver estado de la bici desde la pag web------
  path('estado/', verEstadobici, name='estado'),
-
 
 #Login por tipo de usuario
  path('login/', views.login_view, name='login'),
@@ -110,21 +103,19 @@ path('actUsuario/',views.actUsuario),
     path('403/', views.permission_denied_view, name='permission_denied'),
     path('clientes/', views.verClientes, name='clientes'),
     path('ordenes/', views.verOrdenes, name='ordenes'),
-
-
-
+    
 #Menu inicio despues del login Admin
 path('menuadmin',views.menuAdmin,name="menuadmin"),
-
 #Reportes de ordenes
 path('reporte/<int:orden_id>/', detalle_orden, name='detalle_orden'),
-
-
 path('plant',views.verPlan,name="plant"),
-
  path('lista_ordenes/', views.lista_ordenes, name='lista_ordenes'),
-
  path('productos/<str:producto_id>/', views.detalle_producto, name='detalle_producto'),
+#Recuperacion de contraseña
+ path('password_reset/', password_reset_request, name='password_reset'),
+    path('reset/<uidb64>/<token>/', password_reset_confirm, name='password_reset_confirm'),
+    path('password_reset/done/', TemplateView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('password_reset_complete/', TemplateView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
 
 
 

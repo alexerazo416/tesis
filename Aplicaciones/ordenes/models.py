@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 
 
 class Usuario(models.Model):
@@ -10,6 +11,7 @@ class Usuario(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
     ci_us = models.CharField(max_length=13, null=True)
+    last_login = models.DateTimeField(blank=True, null=True)  # Añadir este campo
     ADMINISTRADOR = 'ADMINISTRADOR'
     MECANICO = 'MECANICO'
     ROLES = [
@@ -25,6 +27,9 @@ class Usuario(models.Model):
         return check_password(raw_password, self.password)
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.username})"
+    def get_email_field_name(self):
+        return 'email'
+
 
 class Categoria(models.Model):
     id_cat = models.AutoField(primary_key=True)

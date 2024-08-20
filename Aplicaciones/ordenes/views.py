@@ -490,7 +490,7 @@ def agBicicleta(request):
 @role_required(allowed_roles=['ADMINISTRADOR','MECANICO'])
 def guardarBicicleta(request):
     if request.method == 'POST':
-        id_bic = request.POST["id_bic"]
+        id_bic = request.POST["id_bic"].strip().upper()
         cli = request.POST["cli"]
         cliSeleccionado = get_object_or_404(Clientes, id_cli=cli)
         color_bic = request.POST["color_bic"].upper()
@@ -1179,3 +1179,50 @@ def detalle_orden(request, orden_id):
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, id_pro=producto_id)
     return render(request, 'productos/detalle_producto.html', {'producto': producto})
+
+
+#Envio de correos
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        try:
+            user = Usuario.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_url = request.build_absolute_uri(
+                f'/reset/{uid}/{token}/'
+            )
+            message = render_to_string('password_reset_email.html', {
+                'user': user,
+                'reset_url': reset_url,
+            })
+            send_mail(
+                'Restablecimiento de contraseña',
+                message,
+                'ronalmena2020@gmail.com',  # Cambia esto si es necesario
+                [user.email],
+                fail_silently=False,
+            )
+            return redirect('/password_reset/done/')
+        except Usuario.DoesNotExist:
+            return render(request, 'password_reset_form.html', {'error': 'Correo no encontrado'})
+    return render(request, 'password_reset_form.html')
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Usuario.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Usuario.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            new_password = request.POST.get('new_password')
+            user.set_password(new_password)
+            user.save()
+            return redirect('/password_reset_complete/')
+        return render(request, 'password_reset_confirm.html', {'validlink': True})
+    else:
+        return render(request, 'password_reset_confirm.html', {'validlink': False})

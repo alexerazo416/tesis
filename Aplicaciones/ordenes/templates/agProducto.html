@@ -18,14 +18,14 @@
                            data-parsley-minlength-message="El nombre debe tener al menos 3 caracteres">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="cantidad_pro">Precio</label>
-                    <input type="text" class="form-control" id="cantidad_pro" name="cantidad_pro" placeholder="Ingrese el precio del producto" required
-                           data-parsley-required-message="Por favor ingrese el precio del producto"
-                           data-parsley-type="number"
-                           data-parsley-type-message="Por favor ingrese un número válido"
-                           data-parsley-pattern="^\d{1,4}(\.\d{1,2})?$"
-                           data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales">
-                </div>
+      <label for="cantidad_pro">Precio</label>
+      <input type="text" class="form-control" id="cantidad_pro" name="cantidad_pro" placeholder="Ingrese el precio del producto" required
+             data-parsley-required-message="Por favor ingrese el precio del producto"
+             data-parsley-pattern="^\d{1,4}([.,]\d{1,2})?$"
+             data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales, usando punto o coma como separador decimal."
+             oninput="this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1').replace(/(,.*),/g, '$1');">
+  </div>
+
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
@@ -175,5 +175,21 @@
             }
         });
     });
+
+    $(document).ready(function() {
+    $('#frm_nuevo_producto').parsley();
+
+    $('#frm_nuevo_producto').on('submit', function(e) {
+        let precioInput = $('#cantidad_pro');
+        let precioValue = precioInput.val().replace(',', '.');
+        if (isNaN(precioValue)) {
+            e.preventDefault();
+            alert("Por favor ingrese un número válido.");
+        } else {
+            precioInput.val(precioValue);
+        }
+    });
+});
+
 </script>
 {% endblock %}

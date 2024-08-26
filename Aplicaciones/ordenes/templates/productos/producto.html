@@ -33,18 +33,35 @@
     .btn-ver-mas {
         width: 100%;
     }
+    .card-img-top {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
+    }
+    .filter-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .filter-btn {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
 </style>
 
 <div class="container">
     <div class="row">
         <div class="col-md-12 mb-6">
-            <label for="selectCategoria">Seleccionar Categoría:</label>
-            <select id="selectCategoria" class="form-select selectpicker" data-live-search="true">
-                <option value="">Todas las Categorías</option>
+            <div class="filter-container">
+                <button class="btn btn-outline-primary filter-btn" data-filter="">Todas las Categorías</button>
                 {% for categoria in categorias %}
-                    <option value="{{ categoria.tipo_cat }}">{{ categoria.tipo_cat }}</option>
+                    <button class="btn btn-outline-primary filter-btn" data-filter="{{ categoria.tipo_cat }}">{{ categoria.tipo_cat }}</button>
                 {% endfor %}
-            </select>
+            </div>
         </div>
     </div>
 </div><br>
@@ -77,9 +94,9 @@
     $(document).ready(function() {
         $('.selectpicker').selectpicker();
 
-        // Filtrar productos por categoría
-        $('#selectCategoria').change(function() {
-            var selectedCategoria = $(this).val();
+        // Filtrar productos por categoría al hacer clic en los botones
+        $('.filter-btn').click(function() {
+            var selectedCategoria = $(this).attr('data-filter');
             if (selectedCategoria === '') {
                 $('.producto').show();
             } else {

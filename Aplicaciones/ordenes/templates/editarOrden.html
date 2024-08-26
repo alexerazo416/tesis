@@ -35,7 +35,7 @@
                 <select class="form-control" name="estado_det" id="estado_det">
                     <option value="Recibida" {% if ordenes.detalle_set.first.estado_det == 'Recibida' %} selected {% endif %}>Recibida</option>
                     <option value="Iniciado" {% if ordenes.detalle_set.first.estado_det == 'Iniciado' %} selected {% endif %}>Iniciado</option>
-                    <option value="List_ent" {% if ordenes.detalle_set.first.estado_det == 'List_ent' %} selected {% endif %}>Lista para entregar</option>
+                    <option value="Lista para entregar" {% if ordenes.detalle_set.first.estado_det == 'Lista para entregar' %} selected {% endif %}>Lista para entregar</option>
                 </select>
             </div>
             <div class="form-footer">

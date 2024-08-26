@@ -5,26 +5,61 @@
 
 <style>
     .form-header, .h2 {
-        background-color: #0F0CE1;
+        background-color: #0056b3;
         color: white;
-        padding: 10px;
+        padding: 15px;
         border-radius: 5px;
+        text-align: center;
     }
     .btn-link {
         padding: 0;
         border: none;
         background: none;
     }
+    .btn-primary {
+        background-color: #0069d9;
+        border-color: #0062cc;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
     .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         transition: transform 0.2s;
         margin-bottom: 20px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #black;
     }
     .card:hover {
-        transform: scale(1.05);
+        transform: translateY(-5px);
+    }
+    .card-header {
+        border-bottom: 1px solid #e9ecef;
+        padding: 10px 15px;
+        color: white;
+    }
+    .card-header.recibida {
+        background-color: lightblue;
+    }
+    .card-header.iniciado {
+        background-color: lightgreen;
+    }
+    .card-header.lista-entregar {
+        background-color: red;
+    }
+    .card-body {
+        flex: 1;
+        padding: 15px; /* Ajusta el padding para el cuerpo de la tarjeta */
+        background-color: #black !important;
     }
     .card-body p {
         margin: 0;
@@ -35,6 +70,16 @@
         padding: 10px;
         background-color: #f8f9fa;
         border-top: 1px solid #ddd;
+        margin-top: -45px; /* Asegura que el pie de la tarjeta se mantenga en la parte inferior */
+    }
+    .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #007bff;
+    }
+    .icon-btn:hover {
+        color: #0056b3;
     }
     .description-container {
         display: none;
@@ -44,17 +89,72 @@
     }
     .show-more-btn {
         cursor: pointer;
-        color: #0F0CE1;
+        color: #0069d9;
         border: none;
         background: none;
         text-decoration: underline;
     }
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+        background-color: #f1f1f1;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .filter-container, .chart-container {
+        flex: 1;
+        max-width: 300px;
+    }
+    .chart-container {
+        max-width: 250px;
+    }
+    .form-control {
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    .chart-container h3 {
+        display: none;
+    }
+    .main-content {
+        display: flex;
+        justify-content: space-between;
+    }
+    .content-container {
+        flex: 3;
+    }
+    .side-container {
+        flex: 1;
+        margin-left: 20px;
+    }
+
+    .custom-btn {
+        padding: 0.25rem 0.5rem; /* Ajusta el padding según lo necesario */
+        font-size: 0.800rem; /* Tamaño de fuente del botón */
+        line-height: 1; /* Altura de línea */
+        border-radius: 0.2rem; /* Radio de borde (opcional) */
+        margin-right: 0.3rem; /* Espacio a la derecha de cada botón */
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .col-md-4 {
+        display: flex;
+        flex: 1;
+        max-width: 33.333%;
+        padding: 0 15px; /* Ajusta el padding para los márgenes de las columnas */
+    }
 </style>
+
 
 <div class="container">
     <div class="row my-3">
         <div class="col-md-12">
-            <h2 class="h2">Lista de Órdenes</h2>
+            <h2 class="h2">Lista de Órdenes</h2><br>
         </div>
         <div class="col-md-12 mb-3">
             <a href="{% url 'agOrden' %}" class="btn btn-primary">Agregar Orden</a>
@@ -62,99 +162,168 @@
         </div>
     </div>
 
-    <div class="row">
-        {% for orden in ordenes %}
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        Orden Nº {{ orden.id_ord }} - {{ orden.fecha_ord|date:"d M Y" }}
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Descripción:</strong>
-                        {% if orden.descripcion_ord|length > 50 %}
-                            <span id="short-description-{{ orden.id_ord }}">{{ orden.descripcion_ord|slice:":50" }}...</span>
-                            <button class="show-more-btn" id="toggle-btn-{{ orden.id_ord }}" onclick="toggleDescription('{{ orden.id_ord }}')">Ver más</button>
-                        {% else %}
-                            <span>{{ orden.descripcion_ord }}</span>
-                        {% endif %}
-                    </p>
-                    {% if orden.descripcion_ord|length > 50 %}
-                        <div id="description-container-{{ orden.id_ord }}" class="description-container">
-                            <p>{{ orden.descripcion_ord }}</p>
-                            <button class="show-more-btn" onclick="toggleDescription('{{ orden.id_ord }}')">Ver menos</button>
+    <div class="main-content">
+        <!-- Lista de Órdenes -->
+        <div class="content-container">
+            <div class="row">
+                {% for orden in ordenes %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header {% if orden.detalles.0.estado_det == 'Recibida' %}recibida{% elif orden.detalles.0.estado_det == 'Iniciado' %}iniciado{% elif orden.detalles.0.estado_det == 'Lista para entregar' %}lista-entregar{% endif %}">
+                            <h5 class="mb-0">
+                                Orden Nº {{ orden.id_ord }} - {{ orden.fecha_ord|date:"d M Y" }}
+                            </h5>
                         </div>
-                    {% endif %}
-                    <p><strong>Bicicleta:</strong> {{ orden.bicicleta.color_bic }} {{ orden.bicicleta.tipo_bic }} {{'Cod:' }}{{ orden.bicicleta.id_bic }}</p>
-                    <p><strong>Descripcion Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }} </p>
-                    <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
-                    <p><strong>Dueño:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</p>
-                    <p><strong>Estado del Detalle:</strong></p>
-                    <ul>
-                        {% for detalle in orden.detalles %}
-                            <li>{{ detalle.estado_det }}</li>
-                        {% endfor %}
-                    </ul>
+                        <div class="card-body">
+                            <p><strong>Descripción:</strong>
+                                {% if orden.descripcion_ord|length > 50 %}
+                                    <span id="short-description-{{ orden.id_ord }}">{{ orden.descripcion_ord|slice:":50" }}...</span>
+                                    <button class="show-more-btn" id="toggle-btn-{{ orden.id_ord }}" onclick="toggleDescription('{{ orden.id_ord }}')">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                {% else %}
+                                    <span>{{ orden.descripcion_ord }}</span>
+                                {% endif %}
+                            </p>
+                            {% if orden.descripcion_ord|length > 50 %}
+                                <div id="description-container-{{ orden.id_ord }}" class="description-container">
+                                    <p>{{ orden.descripcion_ord }}</p>
+                                    <button class="show-more-btn" onclick="toggleDescription('{{ orden.id_ord }}')">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            <p><strong>Bicicleta:</strong> {{ orden.bicicleta.color_bic }} {{ orden.bicicleta.tipo_bic }} {{'Cod:' }}{{ orden.bicicleta.id_bic }}</p>
+                            <p><strong>Descripción Bicicleta:</strong> {{ orden.bicicleta.descripcion_bic }}</p>
+                            <p><strong>Mecánico:</strong> {{ orden.fkusuario.nombre }} {{ orden.fkusuario.apellido }}</p>
+                            <p><strong>Dueño:</strong> {{ orden.bicicleta.cliente.nombre_cli }}</p>
+                            <p><strong>Estado del Detalle:</strong></p>
+                            <ul>
+                                {% for detalle in orden.detalles %}
+                                    <li>{{ detalle.estado_det }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="card-footer">
+      <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info custom-btn" title="Editar Orden">
+          <i class="fas fa-edit"></i>
+      </a>
+      <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning custom-btn" title="Detalles">
+          <i class="fas fa-list"></i> Detalles
+      </a>
+      <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn btn-secondary custom-btn" title="Reporte Completo">
+          <i class="fas fa-print"></i> Reporte
+      </a>
+      <button class="btn btn-danger custom-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
+          <i class="fas fa-trash"></i> Eliminar
+      </button>
+  </div>
+
+                    </div>
                 </div>
-                <div class="card-footer">
-                    <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info icon-btn" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning icon-btn" title="Detalles">
-                        <i class="fas fa-list"></i>
-                    </a>
-                    <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn " title="Reporte Completo">
-                        <i class="fas fa-print"></i>
-                    </a>
-                    <button class="btn btn-danger icon-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
+
+        <!-- Contenedor para el filtro y el gráfico -->
+        <div class="side-container">
+            <div class="filter-container">
+                <h3>Filtrar Órdenes</h3>
+                <form method="get" action="{% url 'ordenes' %}">
+                    <div class="form-group">
+                        <label for="estado">Seleccione el Estado:</label>
+                        <select id="estado" name="estado" class="form-control">
+                            <option value="TODOS" {% if estado_filtro == 'TODOS' %}selected{% endif %}>Todos</option>
+                            <option value="Recibida" {% if estado_filtro == 'Recibida' %}selected{% endif %}>Recibida</option>
+                            <option value="Iniciado" {% if estado_filtro == 'Iniciado' %}selected{% endif %}>Iniciado</option>
+                            <option value="Lista para entregar" {% if estado_filtro == 'Lista para entregar' %}selected{% endif %}>Lista para entregar</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filtrar</button> <br>
+                </form><br>
+            </div>
+            <div class="chart-container">
+                <canvas id="ordenesPieChart" width="300" height="300"></canvas>
+            </div>
+            <section>
+        {% if estado_filtro != 'TODOS' %}
+            <h4>Total de órdenes en estado "{{ estado_filtro }}": {{ total_ordenes_por_estado.Filtrado }}</h4>
+        {% else %}
+            <h4>Total de órdenes: {{ total_ordenes }}</h4>
+        {% endif %}
+    </section>
+        </div>
     </div>
 </div>
 
-<script type="text/javascript">
-    function eliminarOrden(url) {
-        Swal.fire({
-            title: "¿Está seguro de eliminar la orden seleccionada?",
-            text: "",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "SÍ"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                eliminarOrdenConfirmado(url);
-            } else {
-                console.log("Eliminación cancelada");
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctxPie = document.getElementById('ordenesPieChart').getContext('2d');
+    const ordenesPieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: ['Recibida', 'Iniciado', 'Lista para entregar'],
+            datasets: [{
+                label: 'Órdenes por Estado',
+                data: [
+                    {{ total_ordenes_por_estado.Recibida }},
+                    {{ total_ordenes_por_estado.Iniciado }},
+                    {{ total_ordenes_por_estado.Lista_para_entregar }}
+                ],
+                backgroundColor: [
+                    'lightblue',
+                    'lightgreen',
+                    'red'
+                ],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
             }
-        });
-    }
+        }
+    });
 
-    function eliminarOrdenConfirmado(url) {
-        window.location.href = url;
-    }
+    function toggleDescription(ordenId) {
+        const shortDescription = document.getElementById(`short-description-${ordenId}`);
+        const descriptionContainer = document.getElementById(`description-container-${ordenId}`);
+        const toggleButton = document.getElementById(`toggle-btn-${ordenId}`);
 
-    function toggleDescription(id) {
-        var shortDescription = document.getElementById('short-description-' + id);
-        var container = document.getElementById('description-container-' + id);
-        var btn = document.getElementById('toggle-btn-' + id);
-
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            shortDescription.style.display = 'none';
-            btn.textContent = 'Ver menos';
+        if (descriptionContainer.style.display === "none" || descriptionContainer.style.display === "") {
+          shortDescription.style.display = "none";
+          descriptionContainer.style.display = "block";
+          toggleButton.classList.remove('fa-info-circle');
+          toggleButton.classList.add('fa-info-circle');
         } else {
-            container.style.display = 'none';
-            shortDescription.style.display = 'inline';
-            btn.textContent = 'Ver más';
+          shortDescription.style.display = "inline";
+          descriptionContainer.style.display = "none";
+          toggleButton.classList.remove('fa-info-circle');
+          toggleButton.classList.add('fa-info-circle');
         }
     }
-</script>
 
+    function eliminarOrden(url) {
+     Swal.fire({
+         title: "¿Está seguro de eliminar la orden seleccionada?",
+         text: "",
+         icon: "question",
+         showCancelButton: true,
+         confirmButtonColor: "#3085d6",
+         cancelButtonColor: "#d33",
+         confirmButtonText: "SÍ"
+     }).then((result) => {
+         if (result.isConfirmed) {
+             eliminarOrdenConfirmado(url);
+         } else {
+             console.log("Eliminación cancelada");
+         }
+     });
+ }
+</script>
 {% endblock %}

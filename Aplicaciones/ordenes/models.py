@@ -38,9 +38,9 @@ class Categoria(models.Model):
 
 class Producto(models.Model):
     id_pro = models.CharField(max_length=13,primary_key=True)
-    nombre_pro = models.CharField(max_length=100, null=True)
+    nombre_pro = models.CharField(max_length=300, null=True)
     cantidad_pro = models.FloatField()
-    descripcion_pro = models.CharField(max_length=400, null=True)
+    descripcion_pro = models.CharField(max_length=3000, null=True)
     ftprodu = models.FileField(upload_to='producto',null=True,blank=True)
     fkcategoria = models.ForeignKey(Categoria,null=True,blank=True,on_delete=models.PROTECT)
 
@@ -50,7 +50,7 @@ class Clientes(models.Model):
     nombre_cli = models.CharField(max_length=50)
     apellido_cli = models.CharField(max_length=50,null=True )
     correo_cli = models.CharField(max_length=50)
-    direccion_cli = models.CharField(max_length=50)
+    direccion_cli = models.CharField(max_length=200)
     estatura_cli=models.CharField(max_length=13,null =True)
     fono = models.CharField(max_length=13,null =True)
     is_deleted = models.BooleanField(default=False)  # Campo para eliminación lógica
@@ -65,13 +65,13 @@ class Clientes(models.Model):
 
 class Bicicleta(models.Model):
     id_bic = models.CharField(max_length=20,primary_key=True)
-    color_bic = models.CharField(max_length=20,null=True)
-    marca_bic = models.CharField(max_length=30,null=True)
+    color_bic = models.CharField(max_length=200,null=True)
+    marca_bic = models.CharField(max_length=200,null=True)
     descripcion_bic = models.TextField()
-    tipo_bic = models.CharField(max_length=40,null=True)
-    accesorios_bic = models.CharField(max_length=40,null=True)
-    grupo_bic = models.CharField(max_length=40,null=True)
-    talla_bic = models.CharField(max_length=40,null=True)
+    tipo_bic = models.CharField(max_length=300,null=True)
+    accesorios_bic = models.CharField(max_length=3000,null=True)
+    grupo_bic = models.CharField(max_length=100,null=True)
+    talla_bic = models.CharField(max_length=100,null=True)
     fotografia = models.FileField(upload_to='bicicleta',null=True,blank=True)
     cliente=models.ForeignKey(Clientes,null=True,blank=True,on_delete=models.PROTECT)
     is_deleted = models.BooleanField(default=False)  # Campo para eliminación lógica
@@ -89,7 +89,7 @@ class Mecanico(models.Model):
     id_mec = models.CharField(max_length=13,primary_key=True)
     nombre_mec = models.CharField(max_length=40)
     correo_mec = models.CharField(max_length=40)
-    direc_mec = models.CharField(max_length=100)
+    direc_mec = models.CharField(max_length=300)
     expdf_mec = models.FileField(upload_to='pdfsmecanicos',null=True,blank=True)
     fkusuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.PROTECT)
 
@@ -98,7 +98,7 @@ class Repuesto(models.Model):
     id_rep = models.CharField(max_length=20,primary_key=True)
     nombre_rep = models.CharField(max_length=255,null=True)
     precio_rep = models.CharField(max_length=7,null=True)
-    proveedor_rep = models.CharField(max_length=20,null=True)
+    proveedor_rep = models.CharField(max_length=200,null=True)
     marca_rep = models.CharField(max_length=50,null=True)
     descripcion_rep = models.TextField()
     cantidad = models.IntegerField(default=1)
@@ -116,8 +116,8 @@ class Orden(models.Model):
 class Detalle(models.Model):
     id_det = models.AutoField(primary_key=True)
     entrega_det = models.DateField(null=True)
-    metodoPago_det = models.CharField(max_length=30, null=True)
-    estado_det = models.CharField(max_length=20, null=True)
+    metodoPago_det = models.CharField(max_length=100, null=True)
+    estado_det = models.CharField(max_length=100, null=True)
     total_det = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     fkrepuestos = models.ManyToManyField(Repuesto, blank=True)
     orden = models.ForeignKey(Orden, null=True, blank=True, on_delete=models.PROTECT)

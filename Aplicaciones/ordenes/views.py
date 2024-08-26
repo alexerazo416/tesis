@@ -26,7 +26,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
-
+from django.core.paginator import Paginator
 
 
 
@@ -340,12 +340,39 @@ def actMecanico(request, mecanico_id):
 #visualizar Ordenes
 
 @role_required(allowed_roles=['ADMINISTRADOR','MECANICO'])
+@role_required(allowed_roles=['ADMINISTRADOR','MECANICO'])
 def verOrdenes(request):
     if 'user_id' not in request.session:
         return redirect('login')
 
     user = Usuario.objects.get(id=request.session['user_id'])
-    ordenes = Orden.objects.prefetch_related('bicicleta', 'mecanico', 'fkusuario', 'detalle_set__fkrepuestos').all()
+    estado_filtro = request.GET.get('estado', 'TODOS')  # Obtener el parámetro de estado
+
+    # Obtener todas las órdenes
+    if estado_filtro == 'TODOS':
+        ordenes = Orden.objects.prefetch_related('bicicleta', 'mecanico', 'fkusuario', 'detalle_set__fkrepuestos').all()
+    else:
+        ordenes = Orden.objects.prefetch_related('bicicleta', 'mecanico', 'fkusuario', 'detalle_set__fkrepuestos').filter(detalle__estado_det=estado_filtro).distinct()
+
+    # Contar órdenes por estado usando alias simples
+    estados = ['Recibida', 'Iniciado', 'Lista para entregar']
+    total_ordenes_por_estado = {
+        'Recibida': Orden.objects.filter(detalle__estado_det='Recibida').distinct().count(),
+        'Iniciado': Orden.objects.filter(detalle__estado_det='Iniciado').distinct().count(),
+        'Lista_para_entregar': Orden.objects.filter(detalle__estado_det='Lista para entregar').distinct().count(),
+    }
+
+    # Contar el total de órdenes según el estado actual del filtro
+    if estado_filtro != 'TODOS':
+        total_ordenes_por_estado['Filtrado'] = ordenes.count()
+    else:
+        total_ordenes_por_estado['Filtrado'] = total_ordenes_por_estado
+
+    # Paginación
+    paginator = Paginator(ordenes, 10)  # Mostrar 10 órdenes por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     detalles = Detalle.objects.all()
 
     detalles_dict = {}
@@ -354,17 +381,21 @@ def verOrdenes(request):
             detalles_dict[detalle.orden_id] = []
         detalles_dict[detalle.orden_id].append(detalle)
 
-    for orden in ordenes:
+    for orden in page_obj:
         orden.detalles = detalles_dict.get(orden.id_ord, [])
         orden.detalles_completos = all(detalle.detalles_completos() for detalle in orden.detalles)
 
     return render(request, 'ordenes.html', {
         'user': user,
-        'ordenes': ordenes,
+        'ordenes': page_obj,
         'bicis': Bicicleta.objects.all(),
         'mecanicos': Mecanico.objects.all(),
         'detalles': detalles_dict,
+        'estado_filtro': estado_filtro,
+        'total_ordenes': Orden.objects.count(),
+        'total_ordenes_por_estado': total_ordenes_por_estado,
     })
+
 
 
 
@@ -458,7 +489,7 @@ def actOrden(request):
     detalleEditar.save()
 
     # Enviar correo si el estado cambia a "Lista para entregar"
-    if estado_anterior != 'List_ent' and estado_det == 'List_ent':
+    if estado_anterior != 'Lista para entregar' and estado_det == 'Lista para entregar':
         cliente = detalleEditar.orden.bicicleta.cliente
         bicicleta = detalleEditar.orden.bicicleta
         send_mail(
@@ -707,7 +738,7 @@ def procesarActualizacionDetalle(request):
     detalleEditar.total_det = total
     detalleEditar.save()
     # Enviar correo si el estado cambia a "Lista para entregar"
-    if estado_anterior != 'List_ent' and estado_det == 'List_ent':
+    if estado_anterior != 'Lista para entregar' and estado_det == 'Lista para entregar':
         cliente = detalleEditar.orden.bicicleta.cliente
         bicicleta = detalleEditar.orden.bicicleta
         send_mail(
@@ -910,7 +941,7 @@ def obtener_producto(request, id_pro):
 #-------------Calendario----------
     detalles_recibidos = Detalle.objects.filter(estado_det='Recibida')
     detalles_iniciados = Detalle.objects.filter(estado_det='Iniciado')
-    detalles_iniciados = Detalle.objects.filter(estado_det='List_ent')
+    detalles_iniciados = Detalle.objects.filter(estado_det='Lista para entregar')
     detalles_ordenes = detalles_recibidos | detalles_iniciados
     context = {
         'detalles_ordenes': detalles_ordenes
@@ -921,7 +952,7 @@ def obtener_producto(request, id_pro):
 
 @role_required(allowed_roles=['MECANICO','ADMINISTRADOR'])
 def vista_calendario(request):
-    detalles_ordenes = Detalle.objects.filter(estado_det__in=['Recibida', 'Iniciado', 'List_ent']).select_related('orden')
+    detalles_ordenes = Detalle.objects.filter(estado_det__in=['Recibida', 'Iniciado', 'Lista para entregar']).select_related('orden')
     return render(request, 'calendario.html', {'detalles_ordenes': detalles_ordenes})
 
 

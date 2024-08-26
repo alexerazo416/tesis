@@ -21,12 +21,11 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="precio_rep">Precio:</label>
-                    <input type="number" name="precio_rep" id="precio_rep" class="form-control" placeholder="Ingrese precio" required
+                    <input type="text" name="precio_rep" id="precio_rep" class="form-control" placeholder="Ingrese precio" required
                            data-parsley-required-message="Por favor ingrese el precio del repuesto"
-                           data-parsley-type="number"
-                           data-parsley-type-message="Ingrese un número válido"
-                           data-parsley-max="9999"
-                           data-parsley-max-message="El precio no puede tener más de 4 dígitos">
+                           data-parsley-pattern="^\d+([.,]\d{1,2})?$"
+                           data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales, usando punto o coma como separador decimal."
+                           oninput="this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1').replace(/(,.*),/g, '$1');">
                 </div>
             </div>
             <div class="row">
@@ -43,13 +42,17 @@
             <div class="row">
                 <div class="form-group col-md-12">
                     <label for="id_rep">Código Producto:</label>
-                    <input type="text" name="id_rep" id="id_rep" class="form-control" placeholder="Ingrese un código producto">
+                    <input type="text" name="id_rep" id="id_rep" class="form-control" placeholder="Ingrese un código producto" required
+                           data-parsley-required-message="Por favor ingrese el código del producto">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-12">
                     <label for="descripcion_rep">Descripción:</label>
-                    <input type="text" name="descripcion_rep" id="descripcion_rep" class="form-control" placeholder="Ingrese una descripción">
+                    <input type="text" name="descripcion_rep" id="descripcion_rep" class="form-control" placeholder="Ingrese una descripción" required
+                           data-parsley-required-message="Por favor ingrese una descripción"
+                           data-parsley-minlength="5"
+                           data-parsley-minlength-message="La descripción debe tener al menos 5 caracteres">
                 </div>
             </div>
 
@@ -107,32 +110,45 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#frm_nuevo_repuesto').parsley({
-            messages: {
-                "nombre_rep": {
-                    required: "Por favor ingrese el nombre del repuesto",
-                    pattern: "Solo se permiten letras y espacios",
-                    minlength: "El nombre debe tener al menos 2 caracteres"
-                },
-                "precio_rep": {
-                    required: "Por favor ingrese el precio del repuesto",
-                    type: "Ingrese un número válido",
-                    max: "El precio no puede tener más de 4 dígitos"
-                },
-                "marca_rep": {
-                    required: "Por favor ingrese la marca del repuesto",
-                    pattern: "Solo se permiten letras y espacios",
-                    minlength: "La marca debe tener al menos 2 caracteres"
-                },
-                "descripcion_rep": {
-                    minlength: "La descripción debe tener al menos 5 caracteres"
-                },
-                "id_rep": {
-                    // Puedes agregar validaciones específicas para este campo si es necesario
-                }
-            }
-        });
-    });
+  $(document).ready(function() {
+      $('#frm_nuevo_repuesto').parsley({
+          messages: {
+              // Mensajes personalizados para todos los campos
+              "nombre_rep": {
+                  required: "Por favor ingrese el nombre del repuesto",
+                  pattern: "Solo se permiten letras y espacios",
+                  minlength: "El nombre debe tener al menos 2 caracteres"
+              },
+              "precio_rep": {
+                  required: "Por favor ingrese el precio del repuesto",
+                  pattern: "El precio debe tener un máximo de 4 dígitos y hasta 2 decimales, usando punto o coma como separador decimal."
+              },
+              "marca_rep": {
+                  required: "Por favor ingrese la marca del repuesto",
+                  pattern: "Solo se permiten letras y espacios",
+                  minlength: "La marca debe tener al menos 2 caracteres"
+              },
+              "descripcion_rep": {
+                  required: "Por favor ingrese una descripción",
+                  minlength: "La descripción debe tener al menos 5 caracteres"
+              },
+              "id_rep": {
+                  required: "Por favor ingrese el código del producto"
+              }
+          },
+          errorClass: "text-danger"
+      });
+
+      $('#frm_nuevo_repuesto').on('submit', function(e) {
+          let precioInput = $('#precio_rep');
+          let precioValue = precioInput.val().replace(',', '.');
+          if (isNaN(precioValue) || !/^\d+(\.\d{1,2})?$/.test(precioValue)) {
+              e.preventDefault();
+              alert("Por favor ingrese un número válido con hasta 2 decimales.");
+          } else {
+              precioInput.val(precioValue);
+          }
+      });
+  });
 </script>
 {% endblock %}

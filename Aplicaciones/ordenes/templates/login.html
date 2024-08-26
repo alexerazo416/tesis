@@ -89,6 +89,9 @@
                                     <input type="password" id="password" name="password" class="form-control form-control-lg" required />
                                 </div>
                                 <button class="btn btn-dark btn-lg w-100 mb-4" type="submit">Ingresar</button>
+                                <button type="button" class="btn btn-danger btn-lg w-100 mb-4" onclick="window.location.href='{% url 'index' %}'">Cancelar</button>
+
+
                                 <div class="text-center">
                                     <a href="{% url 'password_reset' %}" class="btn btn-link">¿Olvidaste tu contraseña?</a>
                                 </div>

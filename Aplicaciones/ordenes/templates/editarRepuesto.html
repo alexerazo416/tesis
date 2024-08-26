@@ -14,23 +14,38 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="nombre_rep">Nombre:</label>
-                    <input type="text" name="nombre_rep" id="nombre_rep" value="{{ repuesto.nombre_rep }}" placeholder="Ingrese nombre del repuesto" class="form-control" required>
+                    <input type="text" name="nombre_rep" id="nombre_rep" value="{{ repuesto.nombre_rep }}" placeholder="Ingrese nombre del repuesto" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese el nombre del repuesto"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="El nombre debe tener al menos 2 caracteres">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="precio_rep">Precio:</label>
-                    <input type="number" name="precio_rep" id="precio_rep" value="{{ repuesto.precio_rep }}" placeholder="Ingrese precio" class="form-control" required>
+                    <input type="text" name="precio_rep" id="precio_rep" value="{{ repuesto.precio_rep }}" placeholder="Ingrese precio" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese el precio del repuesto"
+                           data-parsley-pattern="^\d+([.,]\d{1,2})?$"
+                           data-parsley-pattern-message="El precio debe tener un máximo de 4 dígitos y hasta 2 decimales, usando punto o coma como separador decimal."
+                           oninput="this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1').replace(/(,.*),/g, '$1');">
                 </div>
             </div>
             <div class="row">
-
                 <div class="form-group col-md-6">
                     <label for="marca_rep">Marca:</label>
-                    <input type="text" name="marca_rep" id="marca_rep" value="{{ repuesto.marca_rep }}" placeholder="Ingrese la marca" class="form-control" required>
+                    <input type="text" name="marca_rep" id="marca_rep" value="{{ repuesto.marca_rep }}" placeholder="Ingrese la marca" class="form-control" required
+                           data-parsley-required-message="Por favor ingrese la marca del repuesto"
+                           data-parsley-pattern="^[a-zA-Z\s]+$"
+                           data-parsley-pattern-message="Solo se permiten letras y espacios"
+                           data-parsley-minlength="2"
+                           data-parsley-minlength-message="La marca debe tener al menos 2 caracteres">
                 </div>
             </div>
             <div class="form-group">
                 <label for="descripcion_rep">Descripción:</label>
-                <input type="text" name="descripcion_rep" id="descripcion_rep" value="{{ repuesto.descripcion_rep }}" placeholder="Ingrese una descripción" class="form-control">
+                <input type="text" name="descripcion_rep" id="descripcion_rep" value="{{ repuesto.descripcion_rep }}" placeholder="Ingrese una descripción" class="form-control"
+                       data-parsley-minlength="5"
+                       data-parsley-minlength-message="La descripción debe tener al menos 5 caracteres">
             </div>
             <div class="form-footer">
                 <button type="submit" class="btn btn-primary">Actualizar</button>
@@ -77,21 +92,27 @@
     }
 
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 <script type="text/javascript">
     $.validator.addMethod("lettersAndSpaces", function (value, element) {
         return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
     }, "Solo se permiten letras y espacios");
 
     $.validator.addMethod("number", function (value, element) {
-        return this.optional(element) || /^-?\d+(\.\d{1,2})?$/.test(value);
-    }, "Por favor ingrese un número válido");
+        return this.optional(element) || /^\d+([.,]\d{1,2})?$/.test(value);
+    }, "Por favor ingrese un número válido con hasta 2 decimales");
 
     $(document).ready(function () {
         $("#frm_nuevo_repuesto").validate({
             rules: {
                 "nombre_rep": {
                     required: true,
-                    minlength: 2
+                    minlength: 2,
+                    lettersAndSpaces: true
                 },
                 "precio_rep": {
                     required: true,
@@ -103,18 +124,18 @@
                     minlength: 2
                 },
                 "descripcion_rep": {
-                    minlength: 5,
-                    required: true,
+                    minlength: 5
                 }
             },
             messages: {
                 "nombre_rep": {
                     required: "Por favor ingrese el nombre del repuesto",
-                    minlength: "El nombre debe tener al menos 2 caracteres"
+                    minlength: "El nombre debe tener al menos 2 caracteres",
+                    lettersAndSpaces: "Solo se permiten letras y espacios"
                 },
                 "precio_rep": {
                     required: "Por favor ingrese el precio del repuesto",
-                    number: "Por favor ingrese un número válido"
+                    number: "Por favor ingrese un número válido con hasta 2 decimales"
                 },
                 "marca_rep": {
                     required: "Por favor ingrese la marca del repuesto",
@@ -122,12 +143,10 @@
                     minlength: "La marca debe tener al menos 2 caracteres"
                 },
                 "descripcion_rep": {
-                    minlength: "La descripción debe tener al menos 5 caracteres",
-                    required: "Por favor ingrese la descripción repuesto",
+                    minlength: "La descripción debe tener al menos 5 caracteres"
                 }
-            },
-            errorClass: "text-danger"
+            },errorClass: "text-danger"
         });
     });
-    </script>
+</script>
 {% endblock %}

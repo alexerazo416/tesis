@@ -51,7 +51,8 @@
                         <thead>
                             <tr>
                                 <th>Seleccionar</th>
-                                <th>Nombre</th>
+                                <th>Repuesto</th>
+                                <th>Marca</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
                             </tr>
@@ -64,6 +65,7 @@
                                         {% if repuesto.id_rep in repuestos_seleccionados %} checked {% endif %}>
                                 </td>
                                 <td>{{ repuesto.nombre_rep }}</td>
+                                <td>{{ repuesto.marca_rep }}</td>
                                 <td>{{ repuesto.precio_rep }}</td>
                                 <td>
                                     <input type="number" name="cantidad_{{ repuesto.id_rep }}" value="1" min="1" class="cantidad-input form-control"

@@ -12,7 +12,7 @@
 
 <style>
     .product-title {
-        font-size: 1.rem;
+        font-size: 1rem;
         font-weight: bold;
         text-align: center;
     }
@@ -42,25 +42,36 @@
         margin: 0 auto;
     }
     .filter-container {
-        display: flex;
-        justify-content: center;
         margin-bottom: 20px;
     }
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     .filter-btn {
-        margin: 0 10px;
+        margin: 5px;
         padding: 10px 20px;
         font-size: 16px;
+    }
+    @media (max-width: 768px) {
+        .filter-btn {
+            flex: 1 1 100%;
+            margin: 5px 0;
+        }
     }
 </style>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-6">
+        <div class="col-md-12">
             <div class="filter-container">
-                <button class="btn btn-outline-primary filter-btn" data-filter="">Todas las Categorías</button>
-                {% for categoria in categorias %}
-                    <button class="btn btn-outline-primary filter-btn" data-filter="{{ categoria.tipo_cat }}">{{ categoria.tipo_cat }}</button>
-                {% endfor %}
+                <div class="filter-row">
+                    <button class="btn btn-outline-primary filter-btn" data-filter="">Todas las Categorías</button>
+                    {% for categoria in categorias %}
+                        <button class="btn btn-outline-primary filter-btn" data-filter="{{ categoria.tipo_cat }}">{{ categoria.tipo_cat }}</button>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

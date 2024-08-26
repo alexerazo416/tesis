@@ -62,12 +62,15 @@ def guardarRepuesto(request):
         # Obtener y limpiar los datos del formulario
         id_rep = request.POST.get("id_rep", "").strip().upper()
         nombre_rep = request.POST.get("nombre_rep", "").strip().upper()
-        precio_rep = request.POST.get("precio_rep", "").strip()  # Aunque no estás validando el precio, también se limpia
+        precio_rep = request.POST.get("precio_rep", "").strip() 
         marca_rep = request.POST.get("marca_rep", "").strip().upper()
         descripcion_rep = request.POST.get("descripcion_rep", "").strip().upper()
         proveedor_rep = request.FILES.get("proveedor_rep")
-        if Repuesto.objects.filter(id_rep=id_rep).exists() or Repuesto.objects.filter(nombre_rep=nombre_rep).exists():
-            messages.error(request, 'El repuesto con el mismo nombre o código ya existe.')
+        if Repuesto.objects.filter(id_rep=id_rep).exists():
+            messages.error(request, 'El código de repuesto ya existe.')
+            return redirect('agRepuesto')  # Redirigir al formulario para corregir el error
+        if Repuesto.objects.filter(nombre_rep=nombre_rep).exists():
+            messages.error(request, 'El nombre de repuesto ya existe.')
             return redirect('agRepuesto')  # Redirigir al formulario para corregir el error
         nuevoRepuesto = Repuesto.objects.create(
             id_rep=id_rep,
@@ -77,7 +80,9 @@ def guardarRepuesto(request):
             descripcion_rep=descripcion_rep,
             proveedor_rep=proveedor_rep)
         messages.success(request, 'Repuesto guardado exitosamente.')
-        return redirect('verRepuesto')  # Redirigir a la vista de repuestos
+        return redirect('verRepuesto')
+
+
 
 
 

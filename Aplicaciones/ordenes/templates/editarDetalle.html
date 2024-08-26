@@ -1,3 +1,4 @@
+
 {% extends "plantilla.html" %}
 {% load static %}
 {% block title %}Agregar Detalles de la Orden{% endblock %}
@@ -10,22 +11,26 @@
         <form action="/procesarActualizacionDetalle/" method="post" enctype="multipart/form-data" id="frm_nuevo_detalle">
             {% csrf_token %}
             <input type="hidden" name="id_det" value="{{ detalles.id_det }}">
-            <b>Fecha de Ingreso</b>
-            <input type="date" id="fecha_ingreso" value="{{ fecha_ingreso|date:'Y-m-d' }}" readonly><br><br>
-
+        <b>Fecha de Ingreso</b>
+        <input type="date" id="fecha_ingreso" value="{{ fecha_ingreso|date:'Y-m-d' }}" readonly><br><br>
+ <!-- Campo oculto con la fecha de ingreso -->
             <div class="row">
-                <div class="form-group col-md-4">
-                    <label for="entrega_det">Fecha estimada de Entrega:</label>
-                    <input type="date" name="entrega_det" id="entrega_det" class="form-control" required
-                           data-parsley-required-message="Por favor ingrese la fecha estimada de entrega"
-                           data-parsley-date="true"
-                           data-parsley-date-message="Por favor ingrese una fecha válida"
-                           data-parsley-date-after="{{ fecha_ingreso|date:'Y-m-d' }}"
-                           data-parsley-date-after-message="La fecha de entrega debe ser mayor o igual a la fecha de ingreso.">
-                </div>
+              <div class="form-group col-md-4">
+    <label for="entrega_det">Fecha estimada de Entrega:</label>
+    <input type="date" name="entrega_det" id="entrega_det" class="form-control" required
+           data-parsley-required-message="Por favor ingrese la fecha estimada de entrega"
+           data-parsley-date="true"
+           data-parsley-date-message="Por favor ingrese una fecha válida"
+           data-parsley-date-after="{{ fecha_ingreso|date:'Y-m-d' }}"
+           data-parsley-date-after-message="La fecha de entrega debe ser mayor o igual a la fecha de ingreso."
+           value="{{ detalles.entrega_det|date:'Y-m-d' }}"> <!-- Asigna la fecha guardada -->
+</div>
+
                 <div class="form-group col-md-4">
                     <label for="metodoPago_det">Método de Pago:</label>
                     <select class="form-control" name="metodoPago_det" id="metodoPago_det" required
+                            data-parsley-required-message="Por favor seleccione el método de pago"
+
                         <option value="">Seleccione Método de Pago</option>
                         <option value="Efectivo" {% if detalles.metodoPago_det == "Efectivo" %} selected {% endif %}>Efectivo</option>
                         <option value="Transferencia" {% if detalles.metodoPago_det == "Transferencia" %} selected {% endif %}>Transferencia</option>
@@ -35,24 +40,25 @@
                 <div class="form-group col-md-4">
                     <label for="estado_det">Estado:</label>
                     <select class="form-control" name="estado_det" id="estado_det" required
-
+                            data-parsley-required-message="Por favor seleccione el estado"
+                            data-parsley-pattern="^[a-zA-Z\s]+$"
+                            data-parsley-pattern-message="Solo se permiten letras y espacios">
                         <option value="">Seleccione el Estado</option>
                         <option value="Recibida" {% if detalles.estado_det == "Recibida" %} selected {% endif %}>Recibida</option>
                         <option value="Iniciado" {% if detalles.estado_det == "Iniciado" %} selected {% endif %}>Iniciado</option>
-                        <option value="Lista para entregar" {% if detalles.estado_det == "Lista para entregar" %} selected {% endif %}>Lista para entregar</option>
+                        <option value="List_ent" {% if detalles.estado_det == "List_ent" %} selected {% endif %}>Lista para entregar</option>
                     </select>
                 </div>
             </div><br>
             <div class="form-group">
                 <label for="repuestos">Repuestos Usados:</label>
                 <button type="button" class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#repuestos-container">Mostrar/Ocultar Repuestos</button>
-                <div id="repuestos-container" class="collapse table-responsive">
+                <div id="repuestos-container" class="collapse">
                     <table id="repuestos-table" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Seleccionar</th>
-                                <th>Repuesto</th>
-                                <th>Marca</th>
+                                <th>Nombre</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
                             </tr>
@@ -65,7 +71,6 @@
                                         {% if repuesto.id_rep in repuestos_seleccionados %} checked {% endif %}>
                                 </td>
                                 <td>{{ repuesto.nombre_rep }}</td>
-                                <td>{{ repuesto.marca_rep }}</td>
                                 <td>{{ repuesto.precio_rep }}</td>
                                 <td>
                                     <input type="number" name="cantidad_{{ repuesto.id_rep }}" value="1" min="1" class="cantidad-input form-control"

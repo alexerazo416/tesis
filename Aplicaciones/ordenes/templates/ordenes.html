@@ -207,7 +207,7 @@
 
                         <div class="card-footer">
       <a href="/editarOrden/{{ orden.id_ord }}" class="btn btn-info custom-btn" title="Editar Orden">
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-edit"></i>Editar
       </a>
       <a href="/editarDetalle/{{ orden.id_ord }}" class="btn btn-warning custom-btn" title="Detalles">
           <i class="fas fa-list"></i> Detalles
@@ -215,9 +215,10 @@
       <a href="{% url 'detalle_orden' orden.id_ord %}" class="btn btn-secondary custom-btn" title="Reporte Completo">
           <i class="fas fa-print"></i> Reporte
       </a>
-      <button class="btn btn-danger custom-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
+      <!-- IDEA:<button class="btn btn-danger custom-btn" title="Eliminar" onclick="eliminarOrden('/eliminarOrden/{{ orden.id_ord }}');">
           <i class="fas fa-trash"></i> Eliminar
-      </button>
+      </button>  -->
+
   </div>
 
                     </div>

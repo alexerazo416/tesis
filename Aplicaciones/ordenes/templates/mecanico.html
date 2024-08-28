@@ -23,6 +23,7 @@
 
             <thead>
                 <tr>
+                  <th>Cédula</th>
                     <th>Usuario</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
@@ -35,6 +36,7 @@
             <tbody>
                 {% for mecanico in mecanicos %}
                 <tr>
+                    <td>{{ mecanico.ci_us }}</td>
                     <td>{{ mecanico.username }}</td>
                     <td>{{ mecanico.nombre }}</td>
                     <td>{{ mecanico.apellido }}</td>

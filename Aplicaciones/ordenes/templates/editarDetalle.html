@@ -41,12 +41,11 @@
                     <label for="estado_det">Estado:</label>
                     <select class="form-control" name="estado_det" id="estado_det" required
                             data-parsley-required-message="Por favor seleccione el estado"
-                            data-parsley-pattern="^[a-zA-Z\s]+$"
-                            data-parsley-pattern-message="Solo se permiten letras y espacios">
+
                         <option value="">Seleccione el Estado</option>
-                        <option value="Recibida" {% if detalles.estado_det == "Recibida" %} selected {% endif %}>Recibida</option>
-                        <option value="Iniciado" {% if detalles.estado_det == "Iniciado" %} selected {% endif %}>Iniciado</option>
-                        <option value="List_ent" {% if detalles.estado_det == "List_ent" %} selected {% endif %}>Lista para entregar</option>
+                        <option value="Recibida" {% if ordenes.detalle_set.first.estado_det == 'Recibida' %} selected {% endif %}>Recibida</option>
+                        <option value="Iniciado" {% if ordenes.detalle_set.first.estado_det == 'Iniciado' %} selected {% endif %}>Iniciado</option>
+                        <option value="Lista para entregar" {% if ordenes.detalle_set.first.estado_det == 'Lista para entregar' %} selected {% endif %}>Lista para entregar</option>
                     </select>
                 </div>
             </div><br>

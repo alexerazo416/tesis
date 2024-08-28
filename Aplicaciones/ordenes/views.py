@@ -62,7 +62,7 @@ def guardarRepuesto(request):
         # Obtener y limpiar los datos del formulario
         id_rep = request.POST.get("id_rep", "").strip().upper()
         nombre_rep = request.POST.get("nombre_rep", "").strip().upper()
-        precio_rep = request.POST.get("precio_rep", "").strip() 
+        precio_rep = request.POST.get("precio_rep", "").strip()
         marca_rep = request.POST.get("marca_rep", "").strip().upper()
         descripcion_rep = request.POST.get("descripcion_rep", "").strip().upper()
         proveedor_rep = request.FILES.get("proveedor_rep")
@@ -322,7 +322,7 @@ def actMecanico(request, mecanico_id):
         mecanico.nombre = request.POST['nombre'].upper()
         mecanico.apellido = request.POST['apellido'].upper()
         mecanico.telefono = request.POST['telefono']
-        mecanico.email = request.POST['email'].upper()
+        mecanico.email = request.POST['email'].strip()
 
         # Convertir el valor del formulario a un valor booleano
         is_active_value = request.POST['is_active'].lower() == 'true'

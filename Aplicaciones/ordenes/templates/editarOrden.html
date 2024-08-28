@@ -17,7 +17,7 @@
                     <option value="">Seleccione la Bicicleta</option>
                     {% for bici in bicis %}
                     <option value="{{ bici.id_bic }}" {% if ordenes.bicicleta.id_bic == bici.id_bic %} selected {% endif %}>
-                        {{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }}
+                        {{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }} {{ bici.cliente.apellido_cli }}
                     </option>
                     {% endfor %}
                 </select>

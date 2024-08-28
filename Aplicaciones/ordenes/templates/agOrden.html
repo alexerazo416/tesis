@@ -21,7 +21,7 @@
                         data-parsley-required-message="Por favor seleccione una bicicleta">
                     <option value="">Seleccione la Bicicleta</option>
                     {% for bici in bicis %}
-                    <option value="{{ bici.id_bic }}">{{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }}</option>
+                    <option value="{{ bici.id_bic }}">{{ bici.marca_bic }} {{ bici.color_bic }} {{ bici.tipo_bic }} Nºserial: {{ bici.id_bic }} Dueño: {{ bici.cliente.nombre_cli }} {{ bici.cliente.apellido_cli }}</option>
                     {% endfor %}
                 </select>
             </div>

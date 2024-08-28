@@ -39,14 +39,11 @@
                     <input type="text" name="descripcion_bic" id="descripcion_bic" placeholder="Ingrese una descripción" class="form-control" required minlength="10" data-parsley-required-message="Por favor ingrese una descripción" data-parsley-minlength-message="La descripción debe tener al menos 10 caracteres">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="tipo_bic">Tipo:</label>
-                    <select name="tipo_bic" id="tipo_bic" class="form-control" required data-parsley-required-message="Por favor seleccione el tipo de bicicleta">
-                        <option value="">Seleccione el tipo</option>
-                        <option value="Montanera">Montañera</option>
-                        <option value="Bmx">Bmx</option>
-                        <option value="Electrica">Eléctrica</option>
-                        <option value="Clasica">Clásica</option>
-                    </select>
+                <label for="tipo_bic">Tipo  de Bicicleta:</label>
+                <input type="text" name="tipo_bic" id="tipo_bic" placeholder="Ingrese el tipo" class="form-control" required
+                    data-parsley-required-message="Por favor ingrese el tipo de la bicicleta"
+                    data-parsley-pattern="^[a-zA-Z0-9\s]+$"
+                    data-parsley-pattern-message="Solo se permiten letras, números y espacios">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="fotografia">Fotografía:</label>

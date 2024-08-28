@@ -262,7 +262,8 @@ def actCliente(request):
 def verMecanico(request):
      mecanicos = Usuario.objects.filter(rol=Usuario.MECANICO)
      return  render(request, 'mecanico.html',{'mecanicos':mecanicos})
-@role_required
+
+@role_required(allowed_roles=['ADMINISTRADOR'])
 def agMecanico(request):
     user = Usuario.objects.get(id=request.session['user_id'])
     mecanicos=Mecanico.objects.all()
@@ -1081,7 +1082,10 @@ def logout_view(request):
     return redirect('login')
 
 
+
+s
 # Vista de registro de usuario
+@role_required(allowed_roles=['ADMINISTRADOR'])
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
